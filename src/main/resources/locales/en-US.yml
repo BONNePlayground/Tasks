@@ -1,2 +1,6 @@
 tasks:
   title: "Tasks Addon"
+
+  messages:
+    bundle-loaded: "Bundle with id [bundle] is loaded"
+    task-loaded: "Task with id [task] is loaded"

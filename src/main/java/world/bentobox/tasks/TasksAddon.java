@@ -69,20 +69,16 @@ public class TasksAddon extends Addon
 			return;
 		}
 
-		// If your addon wants to hook into other GameModes, f.e. use flags, then you should
-		// hook these flags into each GameMode.
-
-		// Fortunately BentoBox provides ability to a list of all loaded GameModes.
+		this.manager = new TasksManager(this);
+		this.manager.load();
 
 		this.getPlugin().getAddonsManager().getGameModeAddons().forEach(gameModeAddon -> {
-			// In Settings (and config) we define DisabledGameModes, list of GameModes where
-			// current Addon should not work.
-			// This is where we do not hook current addon into GameMode addon.
-
 			if (!this.settings.getDisabledGameModes().contains(gameModeAddon.getDescription().getName()))
 			{
 //				gameModeAddon.getPlayerCommand().ifPresent(
-//					playerCommand -> new ExamplePlayerCommand(this, playerCommand));
+//					playerCommand -> new PlayerCommand(this, playerCommand));
+//				gameModeAddon.getPlayerCommand().ifPresent(
+//					playerCommand -> new AdminCommand(this, playerCommand));
 			}
 		});
 
