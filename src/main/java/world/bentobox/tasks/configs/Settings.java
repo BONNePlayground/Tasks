@@ -26,6 +26,77 @@ import world.bentobox.bentobox.api.configuration.StoreAt;
 public class Settings implements ConfigObject
 {
     // ---------------------------------------------------------------------
+    // Section: Getters and Setters
+    // ---------------------------------------------------------------------
+
+
+    /**
+     * This method returns the disabledGameModes value.
+     *
+     * @return the value of disabledGameModes.
+     */
+    public Set<String> getDisabledGameModes()
+    {
+        return disabledGameModes;
+    }
+
+
+    /**
+     * This method sets the disabledGameModes value.
+     *
+     * @param disabledGameModes the disabledGameModes new value.
+     */
+    public void setDisabledGameModes(Set<String> disabledGameModes)
+    {
+        this.disabledGameModes = disabledGameModes;
+    }
+
+
+    /**
+     * Gets player main command.
+     *
+     * @return the player main command
+     */
+    public String getPlayerMainCommand()
+    {
+        return playerMainCommand;
+    }
+
+
+    /**
+     * Sets player main command.
+     *
+     * @param playerMainCommand the player main command
+     */
+    public void setPlayerMainCommand(String playerMainCommand)
+    {
+        this.playerMainCommand = playerMainCommand;
+    }
+
+
+    /**
+     * Gets admin main command.
+     *
+     * @return the admin main command
+     */
+    public String getAdminMainCommand()
+    {
+        return adminMainCommand;
+    }
+
+
+    /**
+     * Sets admin main command.
+     *
+     * @param adminMainCommand the admin main command
+     */
+    public void setAdminMainCommand(String adminMainCommand)
+    {
+        this.adminMainCommand = adminMainCommand;
+    }
+
+
+    // ---------------------------------------------------------------------
     // Section: Variables
     // ---------------------------------------------------------------------
 
@@ -45,29 +116,15 @@ public class Settings implements ConfigObject
     @ConfigEntry(path = "disabled-gamemodes")
     private Set<String> disabledGameModes = new HashSet<>();
 
+    @ConfigComment("Player main sub-command to access the addon.")
+    @ConfigComment("This command label will be required to write after gamemode admin command label, f.e. /[label] tasks")
+    @ConfigComment("Each alias must be separated with an empty space.")
+    @ConfigEntry(path = "commands.player.main", needsRestart = true)
+    private String playerMainCommand = "tasks";
 
-    // ---------------------------------------------------------------------
-    // Section: Getters and Setters
-    // ---------------------------------------------------------------------
-
-
-    /**
-     * This method returns the disabledGameModes value.
-     * @return the value of disabledGameModes.
-     */
-    public Set<String> getDisabledGameModes()
-    {
-        return disabledGameModes;
-    }
-
-
-    /**
-     * This method sets the disabledGameModes value.
-     * @param disabledGameModes the disabledGameModes new value.
-     *
-     */
-    public void setDisabledGameModes(Set<String> disabledGameModes)
-    {
-        this.disabledGameModes = disabledGameModes;
-    }
+    @ConfigComment("Admin main sub-command to access the addon.")
+    @ConfigComment("This command label will be required to write after gamemode admin command label, f.e. /[label] tasks")
+    @ConfigComment("Each alias must be separated with an empty space.")
+    @ConfigEntry(path = "commands.admin.main", needsRestart = true)
+    private String adminMainCommand = "tasks";
 }

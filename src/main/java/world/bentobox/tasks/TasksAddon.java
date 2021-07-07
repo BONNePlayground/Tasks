@@ -8,6 +8,8 @@ import java.util.Optional;
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.configuration.Config;
 import world.bentobox.bentobox.hooks.VaultHook;
+import world.bentobox.tasks.commands.admin.AdminCommand;
+import world.bentobox.tasks.commands.player.PlayerCommand;
 import world.bentobox.tasks.configs.Settings;
 import world.bentobox.tasks.managers.TasksManager;
 
@@ -75,10 +77,10 @@ public class TasksAddon extends Addon
 		this.getPlugin().getAddonsManager().getGameModeAddons().forEach(gameModeAddon -> {
 			if (!this.settings.getDisabledGameModes().contains(gameModeAddon.getDescription().getName()))
 			{
-//				gameModeAddon.getPlayerCommand().ifPresent(
-//					playerCommand -> new PlayerCommand(this, playerCommand));
-//				gameModeAddon.getPlayerCommand().ifPresent(
-//					playerCommand -> new AdminCommand(this, playerCommand));
+				gameModeAddon.getPlayerCommand().ifPresent(
+					playerCommand -> new PlayerCommand(this, playerCommand));
+				gameModeAddon.getPlayerCommand().ifPresent(
+					playerCommand -> new AdminCommand(this, playerCommand));
 			}
 		});
 
