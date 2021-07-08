@@ -96,18 +96,40 @@ public class Settings implements ConfigObject
     }
 
 
+    /**
+     * Gets default active task count.
+     *
+     * @return the default active task count
+     */
+    public int getDefaultActiveTaskCount()
+    {
+        return defaultActiveTaskCount;
+    }
+
+
+    /**
+     * Sets default active task count.
+     *
+     * @param defaultActiveTaskCount the default active task count
+     */
+    public void setDefaultActiveTaskCount(int defaultActiveTaskCount)
+    {
+        this.defaultActiveTaskCount = defaultActiveTaskCount;
+    }
+
+
     // ---------------------------------------------------------------------
     // Section: Variables
     // ---------------------------------------------------------------------
 
-    /**
-     * You can define any variable you want, as long as it can be serialized.
-     * For each variable you need corresponding Getter and Setter method.
-     *
-     * To specify which config entry this variable refer you can just add @ConfigEntry(path = "{Path to your entry}")
-     *
-     * Good codding practise is to initialize variable with default value
-     */
+
+    @ConfigComment("Default number of active tasks that can be done at once.")
+    @ConfigComment("0 or less will mean that there is no limitation.")
+    @ConfigComment("Can be changed with a permission `[gamemode].tasks.active-tasks.[number]`")
+    @ConfigComment("By default it is 1.")
+    @ConfigEntry(path = "default-active-tasks")
+    private int defaultActiveTaskCount = 1;
+
     @ConfigComment("")
     @ConfigComment("This list stores GameModes in which QuestsAddon should not work.")
     @ConfigComment("To disable addon it is necessary to write its name in new line that starts with -. Example:")

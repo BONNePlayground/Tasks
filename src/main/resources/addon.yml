@@ -24,3 +24,9 @@ permissions:
   '[gamemode].tasks':
     description: Let the player use the '/island tasks' command
     default: true
+  '[gamemode].tasks.active-tasks.[number]':
+    description: Lets setting different amount of active tasks at once.
+    default: false
+  '[gamemode].tasks.bundle.[bundle_id]':
+    description: Lets setting different bundle for the owner.
+    default: false

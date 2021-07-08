@@ -34,6 +34,20 @@ public class TaskDataObject implements DataObject
     }
 
 
+    /**
+     * If owner has a permission that defines infinite task count or has a specific amount then return
+     * ownerActiveTaskCount, otherwise return islandActiveTaskCount
+     *
+     * @return getActiveTaskCount for this object.
+     */
+    public int getActiveTaskCount()
+    {
+        return this.ownerActiveTaskCount == -1 || this.ownerActiveTaskCount > 0 ?
+            this.ownerActiveTaskCount : this.islandActiveTaskCount;
+    }
+
+
+
 // ---------------------------------------------------------------------
 // Section: Public Setters and Getters
 // ---------------------------------------------------------------------
@@ -171,6 +185,50 @@ public class TaskDataObject implements DataObject
     }
 
 
+    /**
+     * Gets island active task count.
+     *
+     * @return the island active task count
+     */
+    public int getIslandActiveTaskCount()
+    {
+        return islandActiveTaskCount;
+    }
+
+
+    /**
+     * Sets island active task count.
+     *
+     * @param islandActiveTaskCount the island active task count
+     */
+    public void setIslandActiveTaskCount(int islandActiveTaskCount)
+    {
+        this.islandActiveTaskCount = islandActiveTaskCount;
+    }
+
+
+    /**
+     * Gets owner active task count.
+     *
+     * @return the owner active task count
+     */
+    public int getOwnerActiveTaskCount()
+    {
+        return ownerActiveTaskCount;
+    }
+
+
+    /**
+     * Sets owner active task count.
+     *
+     * @param ownerActiveTaskCount the owner active task count
+     */
+    public void setOwnerActiveTaskCount(int ownerActiveTaskCount)
+    {
+        this.ownerActiveTaskCount = ownerActiveTaskCount;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
@@ -190,11 +248,23 @@ public class TaskDataObject implements DataObject
     private String islandBundle = null;
 
     /**
+     * Stores max amount of active task count.
+     */
+    @Expose
+    private int islandActiveTaskCount = 1;
+
+    /**
      * Stores active bundle by owner permission.
      */
     @Expose
     @Nullable
     private String ownerBundle = null;
+
+    /**
+     * Stores max amount of active task count by permission.
+     */
+    @Expose
+    private int ownerActiveTaskCount = 0;
 
     /**
      * Set of active tasks for a player.
