@@ -229,6 +229,28 @@ public class TaskDataObject implements DataObject
     }
 
 
+    /**
+     * Gets task progress.
+     *
+     * @return the task progress
+     */
+    public Map<String, Double> getTaskProgress()
+    {
+        return taskProgress;
+    }
+
+
+    /**
+     * Sets task progress.
+     *
+     * @param taskProgress the task progress
+     */
+    public void setTaskProgress(Map<String, Double> taskProgress)
+    {
+        this.taskProgress = taskProgress;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
@@ -277,6 +299,12 @@ public class TaskDataObject implements DataObject
      */
     @Expose
     private Map<String, Integer> taskStatus = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+    /**
+     * Task map that contains task ID and progress of the task.
+     */
+    @Expose
+    private Map<String, Double> taskProgress = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     /**
      * Task map that contains task ID and timestamp when it was completed last time/
