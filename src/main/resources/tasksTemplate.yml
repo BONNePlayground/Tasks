@@ -3,28 +3,31 @@ tasks:
   welcome:
     # Display name for users
     name: "&r&lStarting Task"
-    # Description in lore message
-    description: |-
-      &7 Create a new Island
-    # Icon used in GUI's
-    icon: "GRASS_BLOCK:1"
-
-    # Indicates that task is repeatable
-    repeatable: true
-    # Defines timeout in seconds before player can complete task next time
-    timeout: 10000
-    # Defines start date for task.
-    start-date: 08.07.2021
-    # Defines end date for task.
-    end-date: 08.07.2021
-    # Defines if task is D, W, M, Y
-    repeater: 1D
 
     # Indicates that task is not viewable for players. Mostly for development.
-    active: false
+    # By default is disabled.
+    enabled: false
+
+    options:
+      # Description in lore message
+      description: |-
+        &7 Create a new Island
+      # Icon used in GUI's
+      icon: "GRASS_BLOCK:1"
+
+      # Indicates that task is repeatable
+      repeatable: true
+      # Defines timeout in seconds before player can complete task next time
+      timeout: 10000
+      # Defines start date for task.
+      start-date: 08.07.2021
+      # Defines end date for task.
+      end-date: 08.07.2021
+      # Defines if task is D, W, M, Y
+      repeater: 1D
 
     # Valid Task Types
-    task-data:
+    data:
       type: BLOCK_BREAK
       # List of blocks for the filter
       blocks:
