@@ -25,7 +25,7 @@ import world.bentobox.bentobox.BentoBox;
  * This is a main task processor.
  * This task manages fishing and passes that information to the correct data.
  */
-public class FishingTask implements Task, Listener
+public class FishingTask extends Task implements Listener
 {
     /**
      * Instantiates a new fishing task

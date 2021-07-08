@@ -27,7 +27,7 @@ import world.bentobox.bentobox.BentoBox;
  * This is a main task processor.
  * This task manages entity killing and passes that information to the correct data.
  */
-public class EntityKillTask implements Task, Listener
+public class EntityKillTask extends Task implements Listener
 {
     /**
      * Instantiates a new Mob kill task.

@@ -25,7 +25,7 @@ import world.bentobox.bentobox.BentoBox;
  * This is a main task processor.
  * This task manages entity breeding and passes that information to the correct data.
  */
-public class EntityBreedTask implements Task, Listener
+public class EntityBreedTask extends Task implements Listener
 {
     /**
      * Instantiates a new Mob breed task.

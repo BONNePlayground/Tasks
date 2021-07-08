@@ -25,7 +25,7 @@ import world.bentobox.bentobox.BentoBox;
  * This is a main task processor.
  * This task manages block breaking and placing and passes that information to the correct data.
  */
-public class BlockTask implements Task, Listener
+public class BlockTask extends Task implements Listener
 {
     /**
      * Instantiates a new Block task.

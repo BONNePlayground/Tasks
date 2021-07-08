@@ -25,7 +25,7 @@ import world.bentobox.bentobox.BentoBox;
  * This is a main task processor.
  * This task manages damage and passes that information to the correct data.
  */
-public class DamageDealTask implements Task, Listener
+public class DamageDealTask extends Task implements Listener
 {
     /**
      * Instantiates a new damage task.
