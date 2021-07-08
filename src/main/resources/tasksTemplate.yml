@@ -1,0 +1,58 @@
+tasks:
+  # Task ID
+  welcome:
+    # Display name for users
+    name: "&r&lStarting Task"
+    # Description in lore message
+    description: |-
+      &7 Create a new Island
+    # Icon used in GUI's
+    icon: "GRASS_BLOCK:1"
+
+    # Indicates that task is repeatable
+    repeatable: true
+    # Defines timeout in seconds before player can complete task next time
+    timeout: 10000
+    # Defines start date for task.
+    start-date: 08.07.2021
+    # Defines end date for task.
+    end-date: 08.07.2021
+    # Defines if task is D, W, M, Y
+    repeater: 1D
+
+    # Indicates that task is not viewable for players. Mostly for development.
+    active: false
+
+    # Valid Task Types
+    task-data:
+      type: BLOCK_BREAK
+      # List of blocks for the filter
+      blocks:
+        - STONE
+        - COBBLESTONE
+        - GRANITE
+      # Indicates if blocks are whitelisted or blacklisted.
+      whitelist: true
+      # Indicates the amount of blocks that must be reached.
+      number: 10
+
+    # Requirements for the task
+    requirements:
+      permissions: []
+      completed-tasks: []
+      island-level: 10
+      money: 0
+
+    # Rewards
+    rewards:
+      # Player Experience
+      experience: 10
+      # Money Reward
+      money: 1.5
+      # Items Reward
+      items:
+        #TODO:
+        stone:1
+      commands: []
+
+
