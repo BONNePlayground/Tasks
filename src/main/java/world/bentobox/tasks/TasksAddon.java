@@ -43,6 +43,9 @@ public class TasksAddon extends Addon
 			this.logError("TasksAddon settings could not load! Addon disabled.");
 			this.setState(State.DISABLED);
 		}
+
+		// Set current instance as TasksAddon.
+		TasksAddon.instance = this;
 	}
 
 
@@ -181,6 +184,16 @@ public class TasksAddon extends Addon
 	}
 
 
+	/**
+	 * Returns the instance of TaskAddon.
+	 * @return TaskAddon instance.
+	 */
+	public static TasksAddon getInstance()
+	{
+		return instance;
+	}
+
+
 	// ---------------------------------------------------------------------
 	// Section: Variables
 	// ---------------------------------------------------------------------
@@ -204,4 +217,9 @@ public class TasksAddon extends Addon
 	 * Local variable that stores if vaultHook is present.
 	 */
 	private Optional<VaultHook> vaultHook;
+
+	/**
+	 * Instance of the TaskAddon.
+	 */
+	private static TasksAddon instance;
 }
