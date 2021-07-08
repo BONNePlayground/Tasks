@@ -175,7 +175,7 @@ public class TasksManager
     /**
      * @param taskObject object that must be saved.
      */
-    private void saveTask(TaskObject taskObject)
+    void saveTask(TaskObject taskObject)
     {
         this.taskDatabase.saveObjectAsync(taskObject);
     }

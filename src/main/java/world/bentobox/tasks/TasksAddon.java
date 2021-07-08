@@ -11,6 +11,7 @@ import world.bentobox.bentobox.hooks.VaultHook;
 import world.bentobox.tasks.commands.admin.AdminCommand;
 import world.bentobox.tasks.commands.player.PlayerCommand;
 import world.bentobox.tasks.configs.Settings;
+import world.bentobox.tasks.managers.ImportManager;
 import world.bentobox.tasks.managers.TasksManager;
 
 
@@ -74,12 +75,14 @@ public class TasksAddon extends Addon
 		this.manager = new TasksManager(this);
 		this.manager.load();
 
+		this.importManager = new ImportManager(this);
+
 		this.getPlugin().getAddonsManager().getGameModeAddons().forEach(gameModeAddon -> {
 			if (!this.settings.getDisabledGameModes().contains(gameModeAddon.getDescription().getName()))
 			{
 				gameModeAddon.getPlayerCommand().ifPresent(
 					playerCommand -> new PlayerCommand(this, playerCommand));
-				gameModeAddon.getPlayerCommand().ifPresent(
+				gameModeAddon.getAdminCommand().ifPresent(
 					playerCommand -> new AdminCommand(this, playerCommand));
 			}
 		});
@@ -150,6 +153,16 @@ public class TasksAddon extends Addon
 
 
 	/**
+	 * This method returns Tasks Import Manager instance.
+	 * @return ImportManager instance.
+	 */
+	public ImportManager getImportManager()
+	{
+		return this.importManager;
+	}
+
+
+	/**
 	 * This method returns Settings instance.
 	 * @return Settings instance.
 	 */
@@ -183,6 +196,11 @@ public class TasksAddon extends Addon
 	 * Tasks Manager class.
 	 */
 	private TasksManager manager;
+
+	/**
+	 * Tasks Import Manager class.
+	 */
+	private ImportManager importManager;
 
 	/**
 	 * Local variable that stores if vaultHook is present.
