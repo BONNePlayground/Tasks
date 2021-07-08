@@ -16,6 +16,7 @@ import world.bentobox.tasks.TasksAddon;
 import world.bentobox.tasks.database.objects.TaskBundleObject;
 import world.bentobox.tasks.database.objects.TaskDataObject;
 import world.bentobox.tasks.database.objects.TaskObject;
+import world.bentobox.tasks.listeners.tasks.Task;
 import world.bentobox.tasks.utils.Constants;
 import world.bentobox.tasks.utils.Utils;
 
@@ -97,7 +98,13 @@ public class TasksManager
             }
             else
             {
+                // Stop old task
+                this.taskCache.get(taskObject.getUniqueId()).getTask().onStop();
+                // Replace
                 this.taskCache.replace(taskObject.getUniqueId(), taskObject);
+                // Start new task.
+                taskObject.getTask().onStart();
+
                 return true;
             }
         }
@@ -110,6 +117,10 @@ public class TasksManager
         }
 
         this.taskCache.put(taskObject.getUniqueId(), taskObject);
+
+        // Start new task.
+        taskObject.getTask().onStart();
+
         return true;
     }
 
@@ -163,12 +174,19 @@ public class TasksManager
 
     /**
      * Save generator tiers from cache into database
+     * @param withTaskStop indicate that all tasks must be stopped at the end.
      */
-    public void save()
+    public void save(boolean withTaskStop)
     {
         this.taskCache.values().forEach(this::saveTask);
         this.taskBundleCache.values().forEach(this::saveTaskBundle);
         this.taskDataCache.values().forEach(this::saveTaskData);
+
+        if (withTaskStop)
+        {
+            // Now stop all active tasks.
+            this.taskCache.values().stream().map(TaskObject::getTask).forEach(Task::onStop);
+        }
     }
 
 

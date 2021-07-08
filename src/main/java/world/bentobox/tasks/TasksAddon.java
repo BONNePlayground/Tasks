@@ -130,10 +130,8 @@ public class TasksAddon extends Addon
 	@Override
 	public void onDisable()
 	{
-		if (this.settings != null)
-		{
-			new Config<>(this, Settings.class).saveConfigObject(this.settings);
-		}
+		// Save Task Manager.
+		this.manager.save(true);
 	}
 
 
