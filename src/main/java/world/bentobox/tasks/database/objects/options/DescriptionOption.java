@@ -17,6 +17,16 @@ import java.util.List;
 public class DescriptionOption implements Option
 {
     /**
+     * @return OptionType.DESCRIPTION
+     */
+    @Override
+    public OptionType getType()
+    {
+        return OptionType.DESCRIPTION;
+    }
+
+
+    /**
      * Gets description.
      *
      * @return the description

@@ -17,6 +17,16 @@ import org.bukkit.inventory.ItemStack;
 public class IconOption implements Option
 {
     /**
+     * @return OptionType.ICON
+     */
+    @Override
+    public OptionType getType()
+    {
+        return OptionType.ICON;
+    }
+
+
+    /**
      * Gets Icon.
      *
      * @return the Icon

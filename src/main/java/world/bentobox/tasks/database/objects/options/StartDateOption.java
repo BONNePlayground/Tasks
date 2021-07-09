@@ -17,6 +17,16 @@ import java.util.Date;
 public class StartDateOption implements Option
 {
     /**
+     * @return OptionType.START_DATE
+     */
+    @Override
+    public OptionType getType()
+    {
+        return OptionType.START_DATE;
+    }
+
+
+    /**
      * Gets StartDate.
      *
      * @return the StartDate

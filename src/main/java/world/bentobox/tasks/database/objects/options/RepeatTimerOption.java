@@ -16,6 +16,16 @@ import com.google.gson.annotations.Expose;
 public class RepeatTimerOption implements Option
 {
     /**
+     * @return OptionType.REPEAT_TIMER
+     */
+    @Override
+    public OptionType getType()
+    {
+        return OptionType.REPEAT_TIMER;
+    }
+
+
+    /**
      * Gets repeat timer.
      *
      * @return the repeat timer

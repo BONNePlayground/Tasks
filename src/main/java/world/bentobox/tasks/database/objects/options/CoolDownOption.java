@@ -16,6 +16,16 @@ import com.google.gson.annotations.Expose;
 public class CoolDownOption implements Option
 {
     /**
+     * @return OptionType.COOL_DOWN
+     */
+    @Override
+    public OptionType getType()
+    {
+        return OptionType.COOL_DOWN;
+    }
+
+
+    /**
      * Gets cool down.
      *
      * @return the cool down

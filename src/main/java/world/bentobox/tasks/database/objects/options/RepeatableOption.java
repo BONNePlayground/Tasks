@@ -16,6 +16,16 @@ import com.google.gson.annotations.Expose;
 public class RepeatableOption implements Option
 {
     /**
+     * @return OptionType.REPEATABLE
+     */
+    @Override
+    public OptionType getType()
+    {
+        return OptionType.REPEATABLE;
+    }
+
+
+    /**
      * Is repeatable boolean.
      *
      * @return the boolean

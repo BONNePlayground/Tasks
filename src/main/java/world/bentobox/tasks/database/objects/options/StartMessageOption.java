@@ -16,6 +16,16 @@ import com.google.gson.annotations.Expose;
 public class StartMessageOption implements Option
 {
     /**
+     * @return OptionType.START_MESSAGE
+     */
+    @Override
+    public OptionType getType()
+    {
+        return OptionType.START_MESSAGE;
+    }
+
+
+    /**
      * Gets StartMessage.
      *
      * @return the description

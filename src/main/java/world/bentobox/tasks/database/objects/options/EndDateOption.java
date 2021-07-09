@@ -17,6 +17,16 @@ import java.util.Date;
 public class EndDateOption implements Option
 {
     /**
+     * @return OptionType.END_DATE
+     */
+    @Override
+    public OptionType getType()
+    {
+        return OptionType.END_DATE;
+    }
+
+
+    /**
      * Gets EndDate.
      *
      * @return the EndDate

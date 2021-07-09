@@ -16,6 +16,16 @@ import com.google.gson.annotations.Expose;
 public class FinishMessageOption implements Option
 {
     /**
+     * @return OptionType.FINISH_MESSAGE
+     */
+    @Override
+    public OptionType getType()
+    {
+        return OptionType.FINISH_MESSAGE;
+    }
+
+
+    /**
      * Gets FinishMessage.
      *
      * @return the FinishMessage
