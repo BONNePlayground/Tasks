@@ -7,6 +7,8 @@
 package world.bentobox.tasks.managers;
 
 
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
@@ -46,6 +48,16 @@ public class TasksManager
 
         this.taskBundleDatabase = new Database<>(addon, TaskBundleObject.class);
         this.taskBundleCache = new HashMap<>();
+    }
+
+
+    /**
+     * This method adds given world as world where addon operates.
+     * @param world World where addon operates.
+     */
+    public void addWorld(World world)
+    {
+        this.operatingWorlds.add(world);
     }
 
 
@@ -226,6 +238,36 @@ public class TasksManager
 
 
     /**
+     * This method returns data about player island.
+     * @param player Player who island data must be returned.
+     * @param world World in which island should be searched.
+     * @return TaskDataObject for players island or null.
+     */
+    @Nullable
+    public TaskDataObject getIslandData(Player player, World world)
+    {
+        if (!this.operatingWorlds.contains(world))
+        {
+            // Not a world where addon operates.
+            return null;
+        }
+
+        Island island = this.addon.getIslands().getIsland(world, player.getUniqueId());
+
+        if (island == null)
+        {
+            // User does not have an island.
+            return null;
+        }
+
+        this.addIslandData(island);
+
+        // Return island data.
+        return this.taskDataCache.get(island.getUniqueId());
+    }
+
+
+    /**
      * This method checks every island in stored worlds for user and loads them in cache.
      *
      * @param uniqueId User unique id.
@@ -233,6 +275,7 @@ public class TasksManager
     public void loadUserIslands(UUID uniqueId)
     {
         BentoBox.getInstance().getIWM().getOverWorlds().stream().
+            filter(this.operatingWorlds::contains).
             map(world -> this.addon.getIslands().getIsland(world, uniqueId)).
             filter(Objects::nonNull).
             forEach(island ->
@@ -453,4 +496,9 @@ public class TasksManager
      * Variable stores database of tasks bundle objects.
      */
     private final Database<TaskBundleObject> taskBundleDatabase;
+
+    /**
+     * Set of worlds where gamemode operates.
+     */
+    public final Set<World> operatingWorlds = new HashSet<>();
 }

@@ -87,6 +87,19 @@ public class TasksAddon extends Addon
 					playerCommand -> new PlayerCommand(this, playerCommand));
 				gameModeAddon.getAdminCommand().ifPresent(
 					playerCommand -> new AdminCommand(this, playerCommand));
+
+				// Add all worlds into map. It would speed up dropping events that comes from different worlds.
+				this.manager.addWorld(gameModeAddon.getOverWorld());
+
+				if (gameModeAddon.getWorldSettings().isNetherGenerate())
+				{
+					this.manager.addWorld(gameModeAddon.getNetherWorld());
+				}
+
+				if (gameModeAddon.getWorldSettings().isEndGenerate())
+				{
+					this.manager.addWorld(gameModeAddon.getEndWorld());
+				}
 			}
 		});
 
