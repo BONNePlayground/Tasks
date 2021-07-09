@@ -48,8 +48,65 @@ public class FinishMessageOption implements Option
 
 
     /**
+     * Is broadcast boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isBroadcast()
+    {
+        return broadcast;
+    }
+
+
+    /**
+     * Sets broadcast.
+     *
+     * @param broadcast the broadcast
+     */
+    public void setBroadcast(boolean broadcast)
+    {
+        this.broadcast = broadcast;
+    }
+
+
+    /**
+     * Is finisher boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isFinisher()
+    {
+        return finisher;
+    }
+
+
+    /**
+     * Sets finisher.
+     *
+     * @param finisher the finisher
+     */
+    public void setFinisher(boolean finisher)
+    {
+        this.finisher = finisher;
+    }
+
+
+    /**
      * Stores the FinishMessage option.
      */
     @Expose
     private String finishMessage;
+
+    /**
+     * Indicates that message must be broadcast to the whole server.
+     */
+    @Expose
+    private boolean broadcast;
+
+    /**
+     * Indicates that message must be send only to the user who finishes.
+     * Otherwise it will be send to the whole team.
+     */
+    @Expose
+    private boolean finisher;
 }
