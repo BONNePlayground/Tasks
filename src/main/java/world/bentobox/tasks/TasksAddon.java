@@ -114,7 +114,7 @@ public class TasksAddon extends Addon
 
 		if (!this.vaultHook.isPresent() || !this.vaultHook.get().hook())
 		{
-			this.logWarning("Economy plugin not found by Tasks Addon!");
+			this.logWarning("Economy plugin not found by Tasks Addon at the startup!");
 		}
 
 		// Register Request Handlers
@@ -191,9 +191,19 @@ public class TasksAddon extends Addon
 	 * return null, if Vault is not present.
 	 * @return {@code VaultHook} if it is present, {@code null} otherwise.
 	 */
-	public VaultHook getVaulHook()
+	public VaultHook getEconomyProvider()
 	{
 		return this.vaultHook.orElse(null);
+	}
+
+
+	/**
+	 * Returns if VaultHook is present and hooked.
+	 * @return Return boolean if vault hook is present and enabled.
+	 */
+	public boolean isEconomyProvided()
+	{
+		return this.vaultHook.isPresent() && this.vaultHook.get().hook();
 	}
 
 
