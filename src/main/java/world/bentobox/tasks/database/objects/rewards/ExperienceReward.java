@@ -48,8 +48,37 @@ public class ExperienceReward implements Reward
 
 
     /**
+     * Is team prize boolean.
+     *
+     * @return the boolean
+     */
+    @Override
+    public boolean isTeamPrize()
+    {
+        return teamPrize;
+    }
+
+
+    /**
+     * Sets team prize.
+     *
+     * @param teamPrize the team prize
+     */
+    public void setTeamPrize(boolean teamPrize)
+    {
+        this.teamPrize = teamPrize;
+    }
+
+
+    /**
      * Value of rewarded experience.
      */
     @Expose
     private long experience;
+
+    /**
+     * Boolean that indicate that prize is given to every team member (online).
+     */
+    @Expose
+    private boolean teamPrize;
 }

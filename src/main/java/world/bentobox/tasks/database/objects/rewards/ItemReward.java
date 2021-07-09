@@ -49,8 +49,37 @@ public class ItemReward implements Reward
 
 
     /**
+     * Is team prize boolean.
+     *
+     * @return the boolean
+     */
+    @Override
+    public boolean isTeamPrize()
+    {
+        return teamPrize;
+    }
+
+
+    /**
+     * Sets team prize.
+     *
+     * @param teamPrize the team prize
+     */
+    public void setTeamPrize(boolean teamPrize)
+    {
+        this.teamPrize = teamPrize;
+    }
+
+
+    /**
      * String that stores ItemStack.
      */
     @Expose
     private ItemStack itemStack;
+
+    /**
+     * Boolean that indicate that prize is given to every team member (online).
+     */
+    @Expose
+    private boolean teamPrize;
 }

@@ -48,8 +48,38 @@ public class CommandReward implements Reward
 
 
     /**
+     * Is team prize boolean.
+     *
+     * @return the boolean
+     */
+    @Override
+    public boolean isTeamPrize()
+    {
+        return teamPrize;
+    }
+
+
+    /**
+     * Sets team prize.
+     *
+     * @param teamPrize the team prize
+     */
+    public void setTeamPrize(boolean teamPrize)
+    {
+        this.teamPrize = teamPrize;
+    }
+
+
+    /**
      * String that stores command.
      */
     @Expose
     private String command;
+
+
+    /**
+     * Boolean that indicate that prize is given to every team member (online).
+     */
+    @Expose
+    private boolean teamPrize;
 }

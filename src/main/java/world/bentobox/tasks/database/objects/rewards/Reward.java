@@ -26,6 +26,13 @@ public interface Reward
 
 
     /**
+     * Indicates that prize must be rewarded to every member.
+     * @return {@code true} if prize must be awarded to every member, {@code false} otherwise.
+     */
+    boolean isTeamPrize();
+
+
+    /**
      * Stores the type of rewards.
      */
     enum RewardType
