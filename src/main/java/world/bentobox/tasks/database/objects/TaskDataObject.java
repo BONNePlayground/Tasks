@@ -10,6 +10,7 @@ package world.bentobox.tasks.database.objects;
 import com.google.gson.annotations.Expose;
 
 import org.jetbrains.annotations.Nullable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -46,6 +47,78 @@ public class TaskDataObject implements DataObject
             this.ownerActiveTaskCount : this.islandActiveTaskCount;
     }
 
+
+// ---------------------------------------------------------------------
+// Section: Processing Methods
+// ---------------------------------------------------------------------
+
+
+    /**
+     * This method returns progress of given task.
+     * @param taskId Task which progress must be returned.
+     * @return double that represents task progress.
+     */
+    public double getTaskProgress(String taskId)
+    {
+        // Always insert empty data if missing?
+        TaskInternalData taskInternalData =
+            this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
+
+        return taskInternalData.getCurrentTaskProgress();
+    }
+
+
+    /**
+     * Increase progress of the task.
+     *
+     * @param taskId the task id
+     * @param progress the progress
+     * @return the new progress value.
+     */
+    public double increaseProgress(String taskId, double progress)
+    {
+        // Always insert empty data if missing?
+        TaskInternalData taskInternalData =
+            this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
+        taskInternalData.increaseProgress(progress);
+
+        return taskInternalData.getCurrentTaskProgress();
+    }
+
+
+    /**
+     * Decrease progress of the task.
+     *
+     * @param taskId the task id
+     * @param progress the progress
+     * @return the new progress value.
+     */
+    public double decreaseProgress(String taskId, double progress)
+    {
+        // Always insert empty data if missing?
+        TaskInternalData taskInternalData =
+            this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
+        taskInternalData.decreaseProgress(progress);
+
+        return taskInternalData.getCurrentTaskProgress();
+    }
+
+
+    /**
+     * Finishes the task.
+     *
+     * @param taskId the task id
+     */
+    public void finishTask(String taskId)
+    {
+        // Always insert empty data if missing?
+        TaskInternalData taskInternalData =
+            this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
+        taskInternalData.finishTask();
+
+        // Remove from active task set?
+        this.activeTasks.remove(taskId);
+    }
 
 
 // ---------------------------------------------------------------------
@@ -142,50 +215,6 @@ public class TaskDataObject implements DataObject
 
 
     /**
-     * Gets task status.
-     *
-     * @return the task status
-     */
-    public Map<String, Integer> getTaskStatus()
-    {
-        return taskStatus;
-    }
-
-
-    /**
-     * Sets task status.
-     *
-     * @param taskStatus the task status
-     */
-    public void setTaskStatus(Map<String, Integer> taskStatus)
-    {
-        this.taskStatus = taskStatus;
-    }
-
-
-    /**
-     * Gets task timestamp.
-     *
-     * @return the task timestamp
-     */
-    public Map<String, Long> getTaskTimestamp()
-    {
-        return taskTimestamp;
-    }
-
-
-    /**
-     * Sets task timestamp.
-     *
-     * @param taskTimestamp the task timestamp
-     */
-    public void setTaskTimestamp(Map<String, Long> taskTimestamp)
-    {
-        this.taskTimestamp = taskTimestamp;
-    }
-
-
-    /**
      * Gets island active task count.
      *
      * @return the island active task count
@@ -230,24 +259,166 @@ public class TaskDataObject implements DataObject
 
 
     /**
-     * Gets task progress.
+     * Gets task status.
      *
-     * @return the task progress
+     * @return the task status
      */
-    public Map<String, Double> getTaskProgress()
+    public Map<String, TaskInternalData> getTaskStatus()
     {
-        return taskProgress;
+        return taskStatus;
     }
 
 
     /**
-     * Sets task progress.
+     * Sets task status.
      *
-     * @param taskProgress the task progress
+     * @param taskStatus the task status
      */
-    public void setTaskProgress(Map<String, Double> taskProgress)
+    public void setTaskStatus(Map<String, TaskInternalData> taskStatus)
     {
-        this.taskProgress = taskProgress;
+        this.taskStatus = taskStatus;
+    }
+
+
+// ---------------------------------------------------------------------
+// Section: Internal Class
+// ---------------------------------------------------------------------
+
+
+    /**
+     * This class stores internal data about task progress, completion count and etc.
+     */
+    private static class TaskInternalData
+    {
+        /**
+         * Increase task progress.
+         *
+         * @param progress the progress
+         */
+        public void increaseProgress(double progress)
+        {
+            this.currentTaskProgress += progress;
+        }
+
+
+        /**
+         * Decrease task progress.
+         *
+         * @param progress the progress
+         */
+        public void decreaseProgress(double progress)
+        {
+            this.currentTaskProgress -= progress;
+        }
+
+
+        /**
+         * This method finishes current task.
+         */
+        public void finishTask()
+        {
+            // Reset progress
+            this.currentTaskProgress = 0;
+            // Increase completion count.
+            this.completionCount++;
+            // Add last completion date.
+            this.lastCompletionTime = new Date().getTime();
+        }
+
+
+        // ---------------------------------------------------------------------
+        // Section: Getters and setters
+        // ---------------------------------------------------------------------
+
+
+        /**
+         * Gets current task progress.
+         *
+         * @return the current task progress
+         */
+        public double getCurrentTaskProgress()
+        {
+            return currentTaskProgress;
+        }
+
+
+        /**
+         * Sets current task progress.
+         *
+         * @param currentTaskProgress the current task progress
+         */
+        public void setCurrentTaskProgress(double currentTaskProgress)
+        {
+            this.currentTaskProgress = currentTaskProgress;
+        }
+
+
+        /**
+         * Gets completion count.
+         *
+         * @return the completion count
+         */
+        public long getCompletionCount()
+        {
+            return completionCount;
+        }
+
+
+        /**
+         * Sets completion count.
+         *
+         * @param completionCount the completion count
+         */
+        public void setCompletionCount(long completionCount)
+        {
+            this.completionCount = completionCount;
+        }
+
+
+        /**
+         * Gets last completion time.
+         *
+         * @return the last completion time
+         */
+        public long getLastCompletionTime()
+        {
+            return lastCompletionTime;
+        }
+
+
+        /**
+         * Sets last completion time.
+         *
+         * @param lastCompletionTime the last completion time
+         */
+        public void setLastCompletionTime(long lastCompletionTime)
+        {
+            this.lastCompletionTime = lastCompletionTime;
+        }
+
+
+        // ---------------------------------------------------------------------
+        // Section: Variables
+        // ---------------------------------------------------------------------
+
+
+        /**
+         * Stores current progress of an active task.
+         */
+        @Expose
+        private double currentTaskProgress = 0;
+
+        /**
+         * Stores amount of times when task was completed.
+         */
+        @Expose
+        private long completionCount;
+
+        /**
+         * Stores a last time when task was completed.
+         */
+        @Expose
+        private long lastCompletionTime;
     }
 
 
@@ -295,20 +466,8 @@ public class TaskDataObject implements DataObject
     private Set<String> activeTasks = new HashSet<>();
 
     /**
-     * Task map that contains task ID and number of its completions.
+     * Task map that contains task ID and it internal data.
      */
     @Expose
-    private Map<String, Integer> taskStatus = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-
-    /**
-     * Task map that contains task ID and progress of the task.
-     */
-    @Expose
-    private Map<String, Double> taskProgress = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-
-    /**
-     * Task map that contains task ID and timestamp when it was completed last time/
-     */
-    @Expose
-    private Map<String, Long> taskTimestamp = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private Map<String, TaskInternalData> taskStatus = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 }
