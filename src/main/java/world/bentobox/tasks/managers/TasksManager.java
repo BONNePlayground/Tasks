@@ -7,6 +7,7 @@
 package world.bentobox.tasks.managers;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +22,12 @@ import world.bentobox.tasks.TasksAddon;
 import world.bentobox.tasks.database.objects.TaskBundleObject;
 import world.bentobox.tasks.database.objects.TaskDataObject;
 import world.bentobox.tasks.database.objects.TaskObject;
+import world.bentobox.tasks.database.objects.options.FinishMessageOption;
+import world.bentobox.tasks.database.objects.options.Option;
+import world.bentobox.tasks.database.objects.rewards.CommandReward;
+import world.bentobox.tasks.database.objects.rewards.ExperienceReward;
+import world.bentobox.tasks.database.objects.rewards.ItemReward;
+import world.bentobox.tasks.database.objects.rewards.MoneyReward;
 import world.bentobox.tasks.listeners.tasks.Task;
 import world.bentobox.tasks.utils.Constants;
 import world.bentobox.tasks.utils.Utils;
@@ -454,6 +461,247 @@ public class TasksManager
     {
         this.taskDataCache.remove(uniqueId);
         this.taskDataDatabase.deleteID(uniqueId);
+    }
+
+
+// ---------------------------------------------------------------------
+// Section: Processing Methods
+// ---------------------------------------------------------------------
+
+
+    /**
+     * This method process task finishing.
+     * @param taskId Task ID that is finished.
+     * @param player Player who finished the task.
+     * @param islandData Data Object for island.
+     */
+    public void onTaskFinish(String taskId, Player player, TaskDataObject islandData)
+    {
+        // Save island data.
+        this.saveTaskData(islandData);
+
+        TaskObject taskObject = this.taskCache.get(taskId);
+
+        if (taskObject == null)
+        {
+            // Hmm... weird.
+            return;
+        }
+
+        Optional<Island> optional = this.addon.getIslands().getIslandById(islandData.getUniqueId());
+
+        if (optional.isEmpty())
+        {
+            // Hmm... very very weird.
+            return;
+        }
+
+        // Gets the island object.
+        Island island = optional.get();
+
+        // Process all rewards.
+        taskObject.getRewardList().forEach(reward ->
+        {
+            switch (reward.getType())
+            {
+                case COMMAND -> {
+                    if (reward.isTeamPrize())
+                    {
+                        island.getMemberSet().stream().map(User::getInstance).forEach(user ->
+                            this.processCommandReward(user, (CommandReward) reward));
+                    }
+                    else
+                    {
+                        this.processCommandReward(User.getInstance(player), (CommandReward) reward);
+                    }
+                }
+                case EXPERIENCE -> {
+                    if (reward.isTeamPrize())
+                    {
+                        island.getMemberSet().stream().map(User::getInstance).forEach(user ->
+                            this.processExperienceReward(user, (ExperienceReward) reward));
+                    }
+                    else
+                    {
+                        this.processExperienceReward(User.getInstance(player), (ExperienceReward) reward);
+                    }
+                }
+                case ITEM -> {
+                    if (reward.isTeamPrize())
+                    {
+                        island.getMemberSet().stream().map(User::getInstance).forEach(user ->
+                            this.processItemReward(user, (ItemReward) reward));
+                    }
+                    else
+                    {
+                        this.processItemReward(User.getInstance(player), (ItemReward) reward);
+                    }
+                }
+                case MONEY -> {
+                    if (reward.isTeamPrize())
+                    {
+                        island.getMemberSet().stream().map(User::getInstance).forEach(user ->
+                            this.processMoneyReward(user, (MoneyReward) reward));
+                    }
+                    else
+                    {
+                        this.processMoneyReward(User.getInstance(player), (MoneyReward) reward);
+                    }
+                }
+            }
+        });
+
+        // Process end messages.
+        taskObject.getOptionList().stream().
+            filter(option -> Option.OptionType.FINISH_MESSAGE.equals(option.getType())).
+            map(option -> (FinishMessageOption) option).
+            forEach(finishMessage -> {
+                if (finishMessage.isBroadcast())
+                {
+                    Bukkit.getOnlinePlayers().stream().map(User::getInstance).forEach(user ->
+                        this.sendMessage(user,
+                            finishMessage.getFinishMessage(),
+                            User.getInstance(player),
+                            taskObject.getName()));
+                }
+                else if (!finishMessage.isFinisher())
+                {
+                    island.getMemberSet().stream().map(User::getInstance).forEach(user ->
+                        this.sendMessage(user,
+                            finishMessage.getFinishMessage(),
+                            User.getInstance(player),
+                            taskObject.getName()));
+                }
+                else
+                {
+                    this.sendMessage(User.getInstance(player),
+                        finishMessage.getFinishMessage(),
+                        User.getInstance(player),
+                        taskObject.getName());
+                }
+            });
+    }
+
+
+    /**
+     * This method process rewarded commands to the user.
+     * @param user User who will be awarded.
+     * @param reward Reward object.
+     */
+    private void processCommandReward(User user, CommandReward reward)
+    {
+        String rewardCommand = reward.getCommand();
+
+        if (rewardCommand.startsWith("[SELF]"))
+        {
+            String alert = "Running command '" + rewardCommand + "' as " + user.getName();
+            this.addon.getLogger().info(alert);
+            rewardCommand = rewardCommand.substring(6).replace("[player]", user.getName()).trim();
+
+            try
+            {
+                if (!user.performCommand(rewardCommand))
+                {
+                    this.showError(rewardCommand);
+                }
+            }
+            catch (Exception e)
+            {
+                this.showError(rewardCommand);
+                return;
+            }
+        }
+
+        // Substitute in any references to player
+        try
+        {
+            if (!this.addon.getServer().dispatchCommand(this.addon.getServer().getConsoleSender(),
+                rewardCommand.replace("[player]", user.getName())))
+            {
+                this.showError(rewardCommand);
+            }
+        }
+        catch (Exception e)
+        {
+            this.showError(rewardCommand);
+        }
+    }
+
+
+    /**
+     * This method process experience reward.
+     * @param user User who receive reward.
+     * @param reward Reward object.
+     */
+    private void processExperienceReward(User user, ExperienceReward reward)
+    {
+        // Experience can be assigned only to online players.
+        // TODO: if really necessary, we could add pending rewards?
+
+        if (user.isOnline())
+        {
+            user.getPlayer().giveExp((int) reward.getExperience());
+        }
+    }
+
+
+    /**
+     * This method process item reward.
+     * @param user User who receive reward.
+     * @param reward Reward object.
+     */
+    private void processItemReward(User user, ItemReward reward)
+    {
+        if (user.isOnline())
+        {
+            // For each item that cannot go into inventory, drop it on the ground.
+            user.getInventory().addItem(reward.getItemStack().clone()).forEach((k, v) ->
+                user.getWorld().dropItem(user.getLocation(), v));
+        }
+    }
+
+
+    /**
+     * This method process money reward.
+     * @param user User who receive reward.
+     * @param reward Reward object.
+     */
+    private void processMoneyReward(User user, MoneyReward reward)
+    {
+        // Money Reward
+        if (this.addon.isEconomyProvided())
+        {
+            this.addon.getEconomyProvider().deposit(user, reward.getMoney());
+        }
+    }
+
+
+    /**
+     * This method sends given message to the receiver, and puts sender as parameter.
+     * @param receiver User who receives the message.
+     * @param message Message string.
+     * @param sender User who triggered message,
+     * @param taskName Name of the task.
+     */
+    private void sendMessage(User receiver, String message, User sender, String taskName)
+    {
+        if (receiver.isOnline())
+        {
+            Utils.sendMessage(receiver, receiver.getTranslation(message,
+                "[player]", sender.getName(),
+                "[task]", taskName));
+        }
+    }
+
+
+    /**
+     * Throws error message.
+     * @param command Error message that appear after failing some command.
+     */
+    private void showError(final String command)
+    {
+        this.addon.getLogger().severe("Problem executing command executed by player - skipping!");
+        this.addon.getLogger().severe(() -> "Command was : " + command);
     }
 
 
