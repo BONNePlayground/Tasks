@@ -69,6 +69,27 @@ public class TaskDataObject implements DataObject
 
 
     /**
+     * This method starts the given task by creating new internal data and adding task to the
+     * active task set.
+     * @param taskId Task that must be started.
+     */
+    public void startTask(String taskId)
+    {
+        TaskInternalData taskInternalData =
+            this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
+
+        if (!this.activeTasks.add(taskId))
+        {
+            // task is already active.
+            return;
+        }
+
+        // Set current progress as 0.
+        taskInternalData.setCurrentTaskProgress(0);
+    }
+
+
+    /**
      * Increase progress of the task.
      *
      * @param taskId the task id
