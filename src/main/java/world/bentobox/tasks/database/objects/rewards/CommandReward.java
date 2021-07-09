@@ -16,6 +16,16 @@ import com.google.gson.annotations.Expose;
 public class CommandReward implements Reward
 {
     /**
+     * @return RewardType.COMMAND.
+     */
+    @Override
+    public RewardType getType()
+    {
+        return RewardType.COMMAND;
+    }
+
+
+    /**
      * Gets command.
      *
      * @return the command

@@ -16,6 +16,16 @@ import com.google.gson.annotations.Expose;
 public class ExperienceReward implements Reward
 {
     /**
+     * @return RewardType.EXPERIENCE.
+     */
+    @Override
+    public RewardType getType()
+    {
+        return RewardType.EXPERIENCE;
+    }
+
+
+    /**
      * Gets experience.
      *
      * @return the experience

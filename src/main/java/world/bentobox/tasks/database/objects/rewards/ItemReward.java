@@ -17,6 +17,16 @@ import org.bukkit.inventory.ItemStack;
 public class ItemReward implements Reward
 {
     /**
+     * @return RewardType.ITEM.
+     */
+    @Override
+    public RewardType getType()
+    {
+        return RewardType.ITEM;
+    }
+
+
+    /**
      * Gets ItemStack.
      *
      * @return the ItemStack

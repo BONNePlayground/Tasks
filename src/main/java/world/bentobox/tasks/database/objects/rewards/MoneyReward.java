@@ -16,6 +16,16 @@ import com.google.gson.annotations.Expose;
 public class MoneyReward implements Reward
 {
     /**
+     * @return RewardType.MONEY.
+     */
+    @Override
+    public RewardType getType()
+    {
+        return RewardType.MONEY;
+    }
+
+
+    /**
      * Gets money.
      *
      * @return the money
