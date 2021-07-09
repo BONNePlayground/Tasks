@@ -48,46 +48,44 @@ public class FinishMessageOption implements Option
 
 
     /**
-     * Is broadcast boolean.
+     * Gets message type.
      *
-     * @return the boolean
+     * @return the message type
      */
-    public boolean isBroadcast()
+    public Type getMessageType()
     {
-        return broadcast;
+        return messageType;
     }
 
 
     /**
-     * Sets broadcast.
+     * Sets message type.
      *
-     * @param broadcast the broadcast
+     * @param messageType the message type
      */
-    public void setBroadcast(boolean broadcast)
+    public void setMessageType(Type messageType)
     {
-        this.broadcast = broadcast;
+        this.messageType = messageType;
     }
 
 
     /**
-     * Is finisher boolean.
-     *
-     * @return the boolean
+     * This enum stores possible values for message type.
      */
-    public boolean isFinisher()
+    public enum Type
     {
-        return finisher;
-    }
-
-
-    /**
-     * Sets finisher.
-     *
-     * @param finisher the finisher
-     */
-    public void setFinisher(boolean finisher)
-    {
-        this.finisher = finisher;
+        /**
+         * Message will be send to whole server.
+         */
+        BROADCAST,
+        /**
+         * Message will be send to the team.
+         */
+        TEAM,
+        /**
+         * Message will be send to finisher.
+         */
+        FINISHER
     }
 
 
@@ -98,15 +96,8 @@ public class FinishMessageOption implements Option
     private String finishMessage;
 
     /**
-     * Indicates that message must be broadcast to the whole server.
+     * Indicates which type of message will be sent.
      */
     @Expose
-    private boolean broadcast;
-
-    /**
-     * Indicates that message must be send only to the user who finishes.
-     * Otherwise it will be send to the whole team.
-     */
-    @Expose
-    private boolean finisher;
+    private Type messageType;
 }

@@ -48,8 +48,56 @@ public class StartMessageOption implements Option
 
 
     /**
+     * Gets message type.
+     *
+     * @return the message type
+     */
+    public Type getMessageType()
+    {
+        return messageType;
+    }
+
+
+    /**
+     * Sets message type.
+     *
+     * @param messageType the message type
+     */
+    public void setMessageType(Type messageType)
+    {
+        this.messageType = messageType;
+    }
+
+
+    /**
+     * This enum stores possible values for message type.
+     */
+    public enum Type
+    {
+        /**
+         * Message will be send to whole server.
+         */
+        BROADCAST,
+        /**
+         * Message will be send to the team.
+         */
+        TEAM,
+        /**
+         * Message will be send to starter.
+         */
+        STARTER
+    }
+
+
+    /**
      * Stores the StartMessage option.
      */
     @Expose
     private String startMessage;
+
+    /**
+     * Indicates the type of message that will be send.
+     */
+    @Expose
+    private Type messageType;
 }
