@@ -2,12 +2,14 @@ package world.bentobox.tasks;
 
 
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.configuration.Config;
 import world.bentobox.bentobox.hooks.VaultHook;
+import world.bentobox.level.Level;
 import world.bentobox.tasks.commands.admin.AdminCommand;
 import world.bentobox.tasks.commands.player.PlayerCommand;
 import world.bentobox.tasks.configs.Settings;
@@ -117,6 +119,8 @@ public class TasksAddon extends Addon
 			this.logWarning("Economy plugin not found by Tasks Addon at the startup!");
 		}
 
+		this.levelHook = this.getPlugin().getAddonsManager().getAddonByName("Level");
+
 		// Register Request Handlers
 		//this.registerRequestHandler(EXAMPLE_REQUEST_HANDLER);
 	}
@@ -208,6 +212,25 @@ public class TasksAddon extends Addon
 
 
 	/**
+	 * This method returns if Level addon is installed.
+	 * @return {@code true} if level addon is installed, {@code false} otherwise.
+	 */
+	public boolean hasLevelHook()
+	{
+		return levelHook.isPresent();
+	}
+
+
+	/**
+	 * @return Level addon class or null.
+	 */
+	public @Nullable Level getLevelHook()
+	{
+		return this.levelHook.orElse(null);
+	}
+
+
+	/**
 	 * Returns the instance of TaskAddon.
 	 * @return TaskAddon instance.
 	 */
@@ -240,6 +263,11 @@ public class TasksAddon extends Addon
 	 * Local variable that stores if vaultHook is present.
 	 */
 	private Optional<VaultHook> vaultHook;
+
+	/**
+	 * Local variable that stores if Level is present.
+	 */
+	private Optional<Level> levelHook;
 
 	/**
 	 * Instance of the TaskAddon.
