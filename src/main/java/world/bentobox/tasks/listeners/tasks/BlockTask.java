@@ -19,6 +19,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import java.util.Set;
 
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.tasks.TasksAddon;
+import world.bentobox.tasks.database.objects.TaskDataObject;
+import world.bentobox.tasks.managers.TasksManager;
 
 
 /**
@@ -57,16 +60,103 @@ public class BlockTask extends Task implements Listener
 // ---------------------------------------------------------------------
 
 
+    /**
+     * Process block placing events.
+     * @param event Block Place Event
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockPlace(BlockPlaceEvent event)
     {
+        TasksManager addonManager = TasksAddon.getInstance().getAddonManager();
+        TaskDataObject islandData = addonManager.getIslandData(event.getPlayer(), event.getBlock().getWorld());
 
+        if (islandData == null)
+        {
+            // There is no data about this player.
+            return;
+        }
+
+        if (!islandData.getActiveTasks().contains(this.getTaskId()))
+        {
+            // This is not active task for a player.
+            return;
+        }
+
+        if (this.whitelist && !this.getMaterialSet().contains(event.getBlock().getType()) ||
+            !this.whitelist && this.getMaterialSet().contains(event.getBlock().getType()))
+        {
+            // Not a whitelisted or is blacklisted material.
+            return;
+        }
+
+        if (this.place)
+        {
+            double progress = islandData.increaseProgress(this.getTaskId(), 1);
+
+            if (progress >= this.blockCount)
+            {
+                addonManager.onTaskFinish(this.getTaskId(), event.getPlayer(), islandData);
+            }
+            else
+            {
+                addonManager.onUpdateProgress(this.getTaskId(), event.getPlayer(), islandData);
+            }
+        }
+        else
+        {
+            islandData.decreaseProgress(this.getTaskId(), 1);
+            addonManager.onUpdateProgress(this.getTaskId(), event.getPlayer(), islandData);
+        }
     }
 
+
+    /**
+     * Process block break event.
+     * @param event Block break event.
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event)
     {
+        TasksManager addonManager = TasksAddon.getInstance().getAddonManager();
+        TaskDataObject islandData = addonManager.getIslandData(event.getPlayer(), event.getBlock().getWorld());
 
+        if (islandData == null)
+        {
+            // There is no data about this player.
+            return;
+        }
+
+        if (!islandData.getActiveTasks().contains(this.getTaskId()))
+        {
+            // This is not active task for a player.
+            return;
+        }
+
+        if (this.whitelist && !this.getMaterialSet().contains(event.getBlock().getType()) ||
+            !this.whitelist && this.getMaterialSet().contains(event.getBlock().getType()))
+        {
+            // Not a whitelisted or is blacklisted material.
+            return;
+        }
+
+        if (!this.place)
+        {
+            double progress = islandData.increaseProgress(this.getTaskId(), 1);
+
+            if (progress >= this.blockCount)
+            {
+                addonManager.onTaskFinish(this.getTaskId(), event.getPlayer(), islandData);
+            }
+            else
+            {
+                addonManager.onUpdateProgress(this.getTaskId(), event.getPlayer(), islandData);
+            }
+        }
+        else
+        {
+            islandData.decreaseProgress(this.getTaskId(), 1);
+            addonManager.onUpdateProgress(this.getTaskId(), event.getPlayer(), islandData);
+        }
     }
 
 
