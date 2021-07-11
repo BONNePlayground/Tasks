@@ -38,6 +38,16 @@ public class MoneyRequirement implements Requirement
 
 
     /**
+     * @return RequirementType.MONEY
+     */
+    @Override
+    public RequirementType getType()
+    {
+        return RequirementType.MONEY;
+    }
+
+
+    /**
      * Variable that stores money.
      */
     @Expose

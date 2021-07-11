@@ -38,6 +38,16 @@ public class PermissionRequirement implements Requirement
 
 
     /**
+     * @return RequirementType.PERMISSION
+     */
+    @Override
+    public RequirementType getType()
+    {
+        return RequirementType.PERMISSION;
+    }
+
+
+    /**
      * String that stores permission.
      */
     @Expose

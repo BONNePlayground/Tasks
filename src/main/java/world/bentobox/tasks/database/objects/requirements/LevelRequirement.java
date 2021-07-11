@@ -38,6 +38,16 @@ public class LevelRequirement implements Requirement
 
 
     /**
+     * @return RequirementType.LEVEL
+     */
+    @Override
+    public RequirementType getType()
+    {
+        return RequirementType.LEVEL;
+    }
+
+
+    /**
      * Variable that stores level.
      */
     @Expose

@@ -38,6 +38,16 @@ public class TaskRequirement implements Requirement
 
 
     /**
+     * @return RequirementType.TASK
+     */
+    @Override
+    public RequirementType getType()
+    {
+        return RequirementType.TASK;
+    }
+
+
+    /**
      * String that stores task id.
      */
     @Expose
