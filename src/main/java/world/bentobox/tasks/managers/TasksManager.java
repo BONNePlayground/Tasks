@@ -18,12 +18,16 @@ import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
+import world.bentobox.bentobox.lists.Flags;
 import world.bentobox.tasks.TasksAddon;
 import world.bentobox.tasks.database.objects.TaskBundleObject;
 import world.bentobox.tasks.database.objects.TaskDataObject;
 import world.bentobox.tasks.database.objects.TaskObject;
-import world.bentobox.tasks.database.objects.options.FinishMessageOption;
-import world.bentobox.tasks.database.objects.options.Option;
+import world.bentobox.tasks.database.objects.options.*;
+import world.bentobox.tasks.database.objects.requirements.LevelRequirement;
+import world.bentobox.tasks.database.objects.requirements.MoneyRequirement;
+import world.bentobox.tasks.database.objects.requirements.PermissionRequirement;
+import world.bentobox.tasks.database.objects.requirements.TaskRequirement;
 import world.bentobox.tasks.database.objects.rewards.CommandReward;
 import world.bentobox.tasks.database.objects.rewards.ExperienceReward;
 import world.bentobox.tasks.database.objects.rewards.ItemReward;
@@ -395,14 +399,15 @@ public class TasksManager
             // There are more active tasks then allowed.
             // Start to remove from first element.
 
-            Iterator<String> activeTasks =
-                new ArrayList<>(dataObject.getActiveTasks()).iterator();
-
-            while (dataObject.getActiveTasks().size() > dataObject.getActiveTaskCount() &&
-                activeTasks.hasNext())
-            {
-                dataObject.getActiveTasks().remove(activeTasks.next());
-            }
+            // TODO: Cancel task if too many is active at the same time.
+//            Iterator<String> activeTasks =
+//                new ArrayList<>(dataObject.getActiveTasks()).iterator();
+//
+//            while (dataObject.getActiveTasks().size() > dataObject.getActiveTaskCount() &&
+//                activeTasks.hasNext())
+//            {
+//                dataObject.getActiveTasks().remove(activeTasks.next());
+//            }
         }
 
         return dataObject;
@@ -470,6 +475,110 @@ public class TasksManager
 
 
     /**
+     * This method will process task starting.
+     * @param taskId TaskId that must be started.
+     * @param player Player who started the task.
+     * @param islandData Island Data object.
+     */
+    public void onTaskStart(String taskId, Player player, TaskDataObject islandData)
+    {
+        TaskObject taskObject = this.taskCache.get(taskId);
+
+        if (taskObject == null)
+        {
+            // Hmm... weird.
+            return;
+        }
+
+        // Validation that task can be started.
+        if (!this.validateTask(taskObject, User.getInstance(player), islandData))
+        {
+            this.sendMessage(User.getInstance(player),
+                "Cannot start the task.",
+                User.getInstance(player),
+                taskObject.getName());
+            return;
+        }
+
+        // Save island data.
+        islandData.startTask(taskId);
+        this.saveTaskData(islandData);
+
+        Optional<Island> optional = this.addon.getIslands().getIslandById(islandData.getUniqueId());
+
+        if (optional.isEmpty())
+        {
+            // Hmm... very very weird.
+            return;
+        }
+
+        // Gets the island object.
+        Island island = optional.get();
+
+        // Process start messages.
+        taskObject.getOptionList().stream().
+            filter(option -> Option.OptionType.START_MESSAGE.equals(option.getType())).
+            map(option -> (StartMessageOption) option).
+            forEach(startMessage -> {
+                switch (startMessage.getMessageType())
+                {
+                    case BROADCAST ->
+                        Bukkit.getOnlinePlayers().stream().map(User::getInstance).forEach(user ->
+                            this.sendMessage(user,
+                                startMessage.getStartMessage(),
+                                User.getInstance(player),
+                                taskObject.getName()));
+                    case TEAM ->
+                        island.getMemberSet().stream().map(User::getInstance).forEach(user ->
+                            this.sendMessage(user,
+                                startMessage.getStartMessage(),
+                                User.getInstance(player),
+                                taskObject.getName()));
+                    case STARTER ->
+                        this.sendMessage(User.getInstance(player),
+                            startMessage.getStartMessage(),
+                            User.getInstance(player),
+                            taskObject.getName());
+                }
+            });
+    }
+
+
+    /**
+     * This method process some things that need to be updated when player progress their task.
+     * @param taskId TaskId that must be started.
+     * @param player Player who progressed the task.
+     * @param islandData Island Data object.
+     */
+    public void onUpdateProgress(String taskId, Player player, TaskDataObject islandData)
+    {
+        // Save island data.
+        this.saveTaskData(islandData);
+
+        TaskObject taskObject = this.taskCache.get(taskId);
+
+        if (taskObject == null)
+        {
+            // Hmm... weird.
+            return;
+        }
+
+        Optional<Island> optional = this.addon.getIslands().getIslandById(islandData.getUniqueId());
+
+        if (optional.isEmpty())
+        {
+            // Hmm... very very weird.
+            return;
+        }
+
+        // Gets the island object.
+        Island island = optional.get();
+
+        // ToDo: If there is a boss bar, then update it.
+    }
+
+
+    /**
      * This method process task finishing.
      * @param taskId Task ID that is finished.
      * @param player Player who finished the task.
@@ -478,6 +587,7 @@ public class TasksManager
     public void onTaskFinish(String taskId, Player player, TaskDataObject islandData)
     {
         // Save island data.
+        islandData.finishTask(taskId);
         this.saveTaskData(islandData);
 
         TaskObject taskObject = this.taskCache.get(taskId);
@@ -556,30 +666,182 @@ public class TasksManager
             filter(option -> Option.OptionType.FINISH_MESSAGE.equals(option.getType())).
             map(option -> (FinishMessageOption) option).
             forEach(finishMessage -> {
-                if (finishMessage.isBroadcast())
+                switch (finishMessage.getMessageType())
                 {
-                    Bukkit.getOnlinePlayers().stream().map(User::getInstance).forEach(user ->
-                        this.sendMessage(user,
+                    case BROADCAST ->
+                        Bukkit.getOnlinePlayers().stream().map(User::getInstance).forEach(user ->
+                            this.sendMessage(user,
+                                finishMessage.getFinishMessage(),
+                                User.getInstance(player),
+                                taskObject.getName()));
+                    case TEAM ->
+                        island.getMemberSet().stream().map(User::getInstance).forEach(user ->
+                            this.sendMessage(user,
+                                finishMessage.getFinishMessage(),
+                                User.getInstance(player),
+                                taskObject.getName()));
+                    case FINISHER ->
+                        this.sendMessage(User.getInstance(player),
                             finishMessage.getFinishMessage(),
                             User.getInstance(player),
-                            taskObject.getName()));
-                }
-                else if (!finishMessage.isFinisher())
-                {
-                    island.getMemberSet().stream().map(User::getInstance).forEach(user ->
-                        this.sendMessage(user,
-                            finishMessage.getFinishMessage(),
-                            User.getInstance(player),
-                            taskObject.getName()));
-                }
-                else
-                {
-                    this.sendMessage(User.getInstance(player),
-                        finishMessage.getFinishMessage(),
-                        User.getInstance(player),
-                        taskObject.getName());
+                            taskObject.getName());
                 }
             });
+    }
+
+
+    /**
+     * This method returns if given task is valid for starting.
+     * @param taskObject Task Object that must be checked.
+     * @param user User who started the task.
+     * @param islandData Island data that contains tasks.
+     * @return {@code true} if task is valid for starting, {@code false} otherwise.
+     */
+    public boolean validateTask(TaskObject taskObject, User user, TaskDataObject islandData)
+    {
+        if (islandData.getActiveTaskCount() > 0 &&
+            islandData.getActiveTasks().size() > islandData.getActiveTaskCount())
+        {
+            // To many active tasks.
+            return false;
+        }
+
+        if (islandData.getActiveTasks().contains(taskObject.getUniqueId()))
+        {
+            // Task is already started
+            return false;
+        }
+
+        // TODO: need to adjust start date based on repeating sequence.
+
+        Optional<StartDateOption> startDate = taskObject.getOptionList().stream().
+            filter(option -> Option.OptionType.START_DATE.equals(option.getType())).
+            map(option -> (StartDateOption) option).
+            findFirst();
+
+        if (startDate.isPresent() && !startDate.get().getStartDate().before(new Date()))
+        {
+            // Task is not started by date.
+            return false;
+        }
+
+        Optional<EndDateOption> endDate = taskObject.getOptionList().stream().
+            filter(option -> Option.OptionType.END_DATE.equals(option.getType())).
+            map(option -> (EndDateOption) option).
+            findFirst();
+
+        if (endDate.isPresent() && !endDate.get().getEndDate().after(new Date()))
+        {
+            // Task is already closed by date.
+            return false;
+        }
+
+        // Check tasks with data in it.
+        if (islandData.getTaskStatus().containsKey(taskObject.getUniqueId()))
+        {
+            boolean completed = islandData.isTaskCompleted(taskObject.getUniqueId());
+
+            if (completed && !taskObject.getOptionList().stream().
+                filter(option -> Option.OptionType.REPEATABLE.equals(option.getType())).
+                map(option -> ((RepeatableOption) option).isRepeatable()).
+                findFirst().
+                orElse(false))
+            {
+                // Task is not repeatable.
+                return false;
+            }
+
+            Optional<CoolDownOption> coolDown = taskObject.getOptionList().stream().
+                filter(option -> Option.OptionType.COOL_DOWN.equals(option.getType())).
+                map(option -> (CoolDownOption) option).
+                findFirst();
+
+            if (coolDown.isPresent())
+            {
+                long lastCompletionTime = islandData.getLastCompletionTime(taskObject.getUniqueId());
+
+                if (new Date().getTime() < lastCompletionTime + coolDown.get().getCoolDown())
+                {
+                    // Cooldown time is not passed.
+                    return false;
+                }
+            }
+        }
+
+        // Check task requirements
+        return taskObject.getRequirementList().stream().anyMatch(requirement ->
+        {
+            switch (requirement.getType())
+            {
+                case EXPERIENCE -> {
+                    // TODO: Experience Requirement?
+                    return user.getPlayer().getTotalExperience() < 0;
+                }
+                case LEVEL -> {
+                    // Check if user island has large enough level.
+                    return this.getIslandLevel(islandData.getUniqueId()) < ((LevelRequirement) requirement).getLevel();
+                }
+                case MONEY -> {
+                    // Check if user has enough balance.
+                    return this.getBalance(user) < ((MoneyRequirement) requirement).getMoney();
+                }
+                case PERMISSION -> {
+                    // Check is user has required permission.
+                    return !user.hasPermission(((PermissionRequirement) requirement).getPermission());
+                }
+                case TASK -> {
+                    // Check if task is not completed yet.
+                    return !islandData.isTaskCompleted(((TaskRequirement) requirement).getTaskId());
+                }
+                default -> {
+                    // Default behaviour
+                    return false;
+                }
+            }
+        });
+    }
+
+
+    /**
+     * This method returns island level based given island UUID.
+     * @param islandUUID island UUID.
+     * @return island level.
+     */
+    private double getIslandLevel(String islandUUID)
+    {
+        if (!this.addon.hasLevelHook())
+        {
+            return Double.MAX_VALUE;
+        }
+
+        Optional<Island> islandById = this.addon.getIslands().getIslandById(islandUUID);
+
+        if (islandById.isEmpty())
+        {
+            return 0;
+        }
+
+        // Get island level via hook.
+        return this.addon.getLevelHook().getIslandLevel(
+            islandById.get().getWorld(),
+            islandById.get().getOwner());
+    }
+
+
+    /**
+     * This method returns user balance in given world.
+     * @param user User who balance must be returned.
+     * @return Balance of the user.
+     */
+    private double getBalance(User user)
+    {
+        if (!this.addon.isEconomyProvided())
+        {
+            // No economy addon. Return max value.
+            return Double.MAX_VALUE;
+        }
+
+        return this.addon.getEconomyProvider().getBalance(user, user.getWorld());
     }
 
 
@@ -588,8 +850,14 @@ public class TasksManager
      * @param user User who will be awarded.
      * @param reward Reward object.
      */
-    private void processCommandReward(User user, CommandReward reward)
+    private void processCommandReward(@Nullable User user, CommandReward reward)
     {
+        if (user == null)
+        {
+            // Null-pointer check.
+            return;
+        }
+
         String rewardCommand = reward.getCommand();
 
         if (rewardCommand.startsWith("[SELF]"))
@@ -633,12 +901,12 @@ public class TasksManager
      * @param user User who receive reward.
      * @param reward Reward object.
      */
-    private void processExperienceReward(User user, ExperienceReward reward)
+    private void processExperienceReward(@Nullable User user, ExperienceReward reward)
     {
         // Experience can be assigned only to online players.
         // TODO: if really necessary, we could add pending rewards?
 
-        if (user.isOnline())
+        if (user != null && user.isOnline())
         {
             user.getPlayer().giveExp((int) reward.getExperience());
         }
@@ -650,9 +918,9 @@ public class TasksManager
      * @param user User who receive reward.
      * @param reward Reward object.
      */
-    private void processItemReward(User user, ItemReward reward)
+    private void processItemReward(@Nullable User user, ItemReward reward)
     {
-        if (user.isOnline())
+        if (user != null && user.isOnline())
         {
             // For each item that cannot go into inventory, drop it on the ground.
             user.getInventory().addItem(reward.getItemStack().clone()).forEach((k, v) ->
@@ -666,10 +934,10 @@ public class TasksManager
      * @param user User who receive reward.
      * @param reward Reward object.
      */
-    private void processMoneyReward(User user, MoneyReward reward)
+    private void processMoneyReward(@Nullable User user, MoneyReward reward)
     {
         // Money Reward
-        if (this.addon.isEconomyProvided())
+        if (user != null && this.addon.isEconomyProvided())
         {
             this.addon.getEconomyProvider().deposit(user, reward.getMoney());
         }
@@ -683,9 +951,9 @@ public class TasksManager
      * @param sender User who triggered message,
      * @param taskName Name of the task.
      */
-    private void sendMessage(User receiver, String message, User sender, String taskName)
+    private void sendMessage(@Nullable User receiver, String message, User sender, String taskName)
     {
-        if (receiver.isOnline())
+        if (receiver != null && receiver.isOnline())
         {
             Utils.sendMessage(receiver, receiver.getTranslation(message,
                 "[player]", sender.getName(),
