@@ -69,6 +69,36 @@ public class TaskDataObject implements DataObject
 
 
     /**
+     * This method returns if task is completed.
+     * @param taskId Task which progress must be returned.
+     * @return {@code true} if task has been completed at least once, {@code false} otherwise.
+     */
+    public boolean isTaskCompleted(String taskId)
+    {
+        // Always insert empty data if missing?
+        TaskInternalData taskInternalData =
+            this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
+
+        return taskInternalData.getCompletionCount() > 0;
+    }
+
+
+    /**
+     * This method returns a long that represents a date when task was completed last time.
+     * @param taskId Task which progress must be returned.
+     * @return long.
+     */
+    public long getLastCompletionTime(String taskId)
+    {
+        // Always insert empty data if missing?
+        TaskInternalData taskInternalData =
+            this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
+
+        return taskInternalData.getLastCompletionTime();
+    }
+
+
+    /**
      * This method starts the given task by creating new internal data and adding task to the
      * active task set.
      * @param taskId Task that must be started.
