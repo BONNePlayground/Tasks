@@ -48,8 +48,36 @@ public class RepeatableOption implements Option
 
 
     /**
+     * Gets number of repeats.
+     *
+     * @return the number of repeats
+     */
+    public int getNumberOfRepeats()
+    {
+        return numberOfRepeats;
+    }
+
+
+    /**
+     * Sets number of repeats.
+     *
+     * @param numberOfRepeats the number of repeats
+     */
+    public void setNumberOfRepeats(int numberOfRepeats)
+    {
+        this.numberOfRepeats = numberOfRepeats;
+    }
+
+
+    /**
      * Stores the repeatable option.
      */
     @Expose
     private boolean repeatable;
+
+    /**
+     * Stores the number of repeats available.
+     */
+    @Expose
+    private int numberOfRepeats;
 }

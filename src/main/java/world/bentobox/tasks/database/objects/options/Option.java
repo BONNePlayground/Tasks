@@ -30,15 +30,18 @@ public interface Option
      */
     enum OptionType
     {
-        COOL_DOWN,
-        DESCRIPTION,
-        END_DATE,
-        FINISH_MESSAGE,
         ICON,
-        REPEATABLE,
-        REPEAT_TIMER,
-        START_DATE,
+        DESCRIPTION,
         START_MESSAGE,
+        FINISH_MESSAGE,
+        START_DATE,
+        END_DATE,
+        REPEATABLE,
+        COOL_DOWN,
+        DAILY_RESET,
+        WEEKLY_RESET,
+        MONTHLY_RESET,
+        YEARLY_RESET,
         UNKNOWN
     }
 }
