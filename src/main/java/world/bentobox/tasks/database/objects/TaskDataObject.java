@@ -372,8 +372,19 @@ public class TaskDataObject implements DataObject
             this.currentTaskProgress = 0;
             // Increase completion count.
             this.completionCount++;
+            this.currentCompletionCount++;
             // Add last completion date.
             this.lastCompletionTime = new Date().getTime();
+        }
+
+
+        /**
+         * This method resets current task completion count.
+         */
+        public void resetTask()
+        {
+            // reset current completion task for rest.
+            this.currentCompletionCount = 0;
         }
 
 
@@ -448,6 +459,28 @@ public class TaskDataObject implements DataObject
         }
 
 
+        /**
+         * Gets current completion count.
+         *
+         * @return the current completion count
+         */
+        public long getCurrentCompletionCount()
+        {
+            return currentCompletionCount;
+        }
+
+
+        /**
+         * Sets current completion count.
+         *
+         * @param currentCompletionCount the current completion count
+         */
+        public void setCurrentCompletionCount(long currentCompletionCount)
+        {
+            this.currentCompletionCount = currentCompletionCount;
+        }
+
+
         // ---------------------------------------------------------------------
         // Section: Variables
         // ---------------------------------------------------------------------
@@ -458,6 +491,12 @@ public class TaskDataObject implements DataObject
          */
         @Expose
         private double currentTaskProgress = 0;
+
+        /**
+         * Stores amount of times when task was completed since last reset.
+         */
+        @Expose
+        private long currentCompletionCount;
 
         /**
          * Stores amount of times when task was completed.
