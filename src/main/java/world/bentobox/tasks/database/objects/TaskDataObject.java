@@ -187,6 +187,20 @@ public class TaskDataObject implements DataObject
     }
 
 
+    /**
+     * Resets current progress for the task.
+     *
+     * @param taskId the task id
+     */
+    public void resetCurrentProgress(String taskId)
+    {
+        // Always insert empty data if missing?
+        TaskInternalData taskInternalData =
+            this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
+        taskInternalData.resetTask();
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Public Setters and Getters
 // ---------------------------------------------------------------------
@@ -400,6 +414,7 @@ public class TaskDataObject implements DataObject
         {
             // reset current completion task for rest.
             this.currentCompletionCount = 0;
+            this.currentTaskProgress = 0;
         }
 
 
