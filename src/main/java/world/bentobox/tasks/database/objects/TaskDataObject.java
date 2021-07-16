@@ -84,6 +84,21 @@ public class TaskDataObject implements DataObject
 
 
     /**
+     * This method returns number of completions since last reset.
+     * @param taskId Task which completion must be returned.
+     * @return Number of completions since last reset.
+     */
+    public long getNumberOfCompletions(String taskId)
+    {
+        // Always insert empty data if missing?
+        TaskInternalData taskInternalData =
+            this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
+
+        return taskInternalData.getCurrentCompletionCount();
+    }
+
+
+    /**
      * This method returns a long that represents a date when task was completed last time.
      * @param taskId Task which progress must be returned.
      * @return long.

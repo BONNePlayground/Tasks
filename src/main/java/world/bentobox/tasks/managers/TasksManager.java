@@ -18,7 +18,6 @@ import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
-import world.bentobox.bentobox.lists.Flags;
 import world.bentobox.tasks.TasksAddon;
 import world.bentobox.tasks.database.objects.TaskBundleObject;
 import world.bentobox.tasks.database.objects.TaskDataObject;
@@ -740,14 +739,16 @@ public class TasksManager
         if (islandData.getTaskStatus().containsKey(taskObject.getUniqueId()))
         {
             boolean completed = islandData.isTaskCompleted(taskObject.getUniqueId());
+            long numberOfCompletion = islandData.getNumberOfCompletions(taskObject.getUniqueId());
 
-            if (completed && !taskObject.getOptionList().stream().
+            if (completed && taskObject.getOptionList().stream().
                 filter(option -> Option.OptionType.REPEATABLE.equals(option.getType())).
-                map(option -> ((RepeatableOption) option).isRepeatable()).
+                map(option -> ((RepeatableOption) option).isRepeatable() ?
+                    ((RepeatableOption) option).getNumberOfRepeats() : 1).
                 findFirst().
-                orElse(false))
+                orElse(1) <= numberOfCompletion)
             {
-                // Task is not repeatable.
+                // Task is not repeatable or repeat count is reached.
                 return false;
             }
 
