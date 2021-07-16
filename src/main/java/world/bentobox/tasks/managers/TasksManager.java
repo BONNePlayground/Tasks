@@ -711,14 +711,13 @@ public class TasksManager
             return false;
         }
 
-        // TODO: need to adjust start date based on repeating sequence.
-
         Optional<StartDateOption> startDate = taskObject.getOptionList().stream().
             filter(option -> Option.OptionType.START_DATE.equals(option.getType())).
             map(option -> (StartDateOption) option).
             findFirst();
 
-        if (startDate.isPresent() && !startDate.get().getStartDate().before(new Date()))
+        if (startDate.isPresent() && !startDate.get().getStartDate().before(
+            Calendar.getInstance(this.addon.getSettings().getTimeZone()).getTime()))
         {
             // Task is not started by date.
             return false;
@@ -729,7 +728,8 @@ public class TasksManager
             map(option -> (EndDateOption) option).
             findFirst();
 
-        if (endDate.isPresent() && !endDate.get().getEndDate().after(new Date()))
+        if (endDate.isPresent() && !endDate.get().getEndDate().after(
+            Calendar.getInstance(this.addon.getSettings().getTimeZone()).getTime()))
         {
             // Task is already closed by date.
             return false;
@@ -738,6 +738,8 @@ public class TasksManager
         // Check tasks with data in it.
         if (islandData.getTaskStatus().containsKey(taskObject.getUniqueId()))
         {
+            this.processResetTask(taskObject, user, islandData);
+
             boolean completed = islandData.isTaskCompleted(taskObject.getUniqueId());
             long numberOfCompletion = islandData.getNumberOfCompletions(taskObject.getUniqueId());
 
@@ -800,6 +802,122 @@ public class TasksManager
                 }
             }
         });
+    }
+
+
+    /**
+     * This method process task resetting upon reaching some date.
+     * @param taskObject Task that must be checked for reset.
+     * @param user User who triggers check.
+     * @param islandData Island Data for user.
+     */
+    private void processResetTask(TaskObject taskObject, User user, TaskDataObject islandData)
+    {
+        long lastCompletionTime = islandData.getLastCompletionTime(taskObject.getUniqueId());
+
+        // Daily Reset
+        Optional<Option> optionalReset = taskObject.getOptionList().stream().
+            filter(option -> Option.OptionType.DAILY_RESET.equals(option.getType())).
+            findFirst();
+
+        if (optionalReset.isPresent())
+        {
+            DailyResetOption resetOption = (DailyResetOption) optionalReset.get();
+
+            // Get calender instance based on timezone in settings.
+            Calendar calendar = Calendar.getInstance(this.addon.getSettings().getTimeZone());
+            // Set h for the task.
+            calendar.set(Calendar.HOUR_OF_DAY, resetOption.getHour());
+
+            // Check if last completion time was before reset timer.
+            if (lastCompletionTime <= calendar.getTimeInMillis())
+            {
+                // Reset the island data.
+                islandData.resetCurrentProgress(taskObject.getUniqueId());
+
+                // Exit, as each task should have only 1 reset option.
+                return;
+            }
+        }
+
+        // Weekly Reset
+        optionalReset = taskObject.getOptionList().stream().
+            filter(option -> Option.OptionType.WEEKLY_RESET.equals(option.getType())).
+            findFirst();
+
+        if (optionalReset.isPresent())
+        {
+            WeeklyResetOption resetOption = (WeeklyResetOption) optionalReset.get();
+
+            // Get calender instance based on timezone in settings.
+            Calendar calendar = Calendar.getInstance(this.addon.getSettings().getTimeZone());
+            // Set h for the task.
+            calendar.set(Calendar.HOUR_OF_DAY, resetOption.getHour());
+            calendar.set(Calendar.DAY_OF_WEEK, resetOption.getDay().getValue());
+
+            // Check if last completion time was before reset timer.
+            if (lastCompletionTime <= calendar.getTimeInMillis())
+            {
+                // Reset the island data.
+                islandData.resetCurrentProgress(taskObject.getUniqueId());
+
+                // Exit, as each task should have only 1 reset option.
+                return;
+            }
+        }
+
+        // Monthly Reset
+        optionalReset = taskObject.getOptionList().stream().
+            filter(option -> Option.OptionType.MONTHLY_RESET.equals(option.getType())).
+            findFirst();
+
+        if (optionalReset.isPresent())
+        {
+            MonthlyResetOption resetOption = (MonthlyResetOption) optionalReset.get();
+
+            // Get calender instance based on timezone in settings.
+            Calendar calendar = Calendar.getInstance(this.addon.getSettings().getTimeZone());
+            // Set h for the task.
+            calendar.set(Calendar.HOUR_OF_DAY, resetOption.getHour());
+            calendar.set(Calendar.DAY_OF_MONTH, resetOption.getDay());
+
+            // Check if last completion time was before reset timer.
+            if (lastCompletionTime <= calendar.getTimeInMillis())
+            {
+                // Reset the island data.
+                islandData.resetCurrentProgress(taskObject.getUniqueId());
+
+                // Exit, as each task should have only 1 reset option.
+                return;
+            }
+        }
+
+        // Yearly Reset
+        optionalReset = taskObject.getOptionList().stream().
+            filter(option -> Option.OptionType.YEARLY_RESET.equals(option.getType())).
+            findFirst();
+
+        if (optionalReset.isPresent())
+        {
+            YearlyResetOption resetOption = (YearlyResetOption) optionalReset.get();
+
+            // Get calender instance based on timezone in settings.
+            Calendar calendar = Calendar.getInstance(this.addon.getSettings().getTimeZone());
+            // Set h for the task.
+            calendar.set(Calendar.HOUR_OF_DAY, resetOption.getHour());
+            calendar.set(Calendar.DAY_OF_MONTH, resetOption.getDay());
+            calendar.set(Calendar.MONTH, resetOption.getMonth().getValue());
+
+            // Check if last completion time was before reset timer.
+            if (lastCompletionTime <= calendar.getTimeInMillis())
+            {
+                // Reset the island data.
+                islandData.resetCurrentProgress(taskObject.getUniqueId());
+
+                // Exit, as each task should have only 1 reset option.
+                return;
+            }
+        }
     }
 
 
