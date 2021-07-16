@@ -3,6 +3,7 @@ package world.bentobox.tasks.configs;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TimeZone;
 
 import world.bentobox.bentobox.api.configuration.ConfigComment;
 import world.bentobox.bentobox.api.configuration.ConfigEntry;
@@ -118,6 +119,28 @@ public class Settings implements ConfigObject
     }
 
 
+    /**
+     * Gets time zone.
+     *
+     * @return the time zone
+     */
+    public TimeZone getTimeZone()
+    {
+        return timeZone;
+    }
+
+
+    /**
+     * Sets time zone.
+     *
+     * @param timeZone the time zone
+     */
+    public void setTimeZone(TimeZone timeZone)
+    {
+        this.timeZone = timeZone;
+    }
+
+
     // ---------------------------------------------------------------------
     // Section: Variables
     // ---------------------------------------------------------------------
@@ -129,6 +152,11 @@ public class Settings implements ConfigObject
     @ConfigComment("By default it is 1.")
     @ConfigEntry(path = "default-active-tasks")
     private int defaultActiveTaskCount = 1;
+
+    @ConfigComment("Stores the TimeZone for the all date calculations.")
+    @ConfigComment("By default it is System Timezone.")
+    @ConfigEntry(path = "timezone")
+    private TimeZone timeZone = TimeZone.getDefault();
 
     @ConfigComment("")
     @ConfigComment("This list stores GameModes in which QuestsAddon should not work.")
