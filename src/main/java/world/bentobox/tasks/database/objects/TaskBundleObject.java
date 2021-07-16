@@ -9,6 +9,9 @@ package world.bentobox.tasks.database.objects;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.Collections;
+import java.util.Set;
+
 import world.bentobox.bentobox.database.objects.DataObject;
 import world.bentobox.bentobox.database.objects.Table;
 
@@ -53,10 +56,37 @@ public class TaskBundleObject implements DataObject
     }
 
 
+    /**
+     * Gets task set.
+     *
+     * @return the task set
+     */
+    public Set<String> getTaskSet()
+    {
+        return taskSet;
+    }
+
+
+    /**
+     * Sets task set.
+     *
+     * @param taskSet the task set
+     */
+    public void setTaskSet(Set<String> taskSet)
+    {
+        this.taskSet = taskSet;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
 
+    /**
+     * Set of tasks in current bundle.
+     */
+    @Expose
+    private Set<String> taskSet = Collections.emptySet();
 
     /**
      * UniqueId for the object.
