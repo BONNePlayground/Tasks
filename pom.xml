@@ -23,6 +23,7 @@
         <spigot.version>1.17-R0.1-SNAPSHOT</spigot.version>
         <bentobox.version>1.17.0</bentobox.version>
         <level.version>2.7.0</level.version>
+        <vault.version>1.7</vault.version>
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- This allows to change between versions and snapshots. -->
@@ -102,6 +103,10 @@
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public</url>
         </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
     </repositories>
 
     <distributionManagement>
@@ -131,6 +136,12 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>plugin-annotations</artifactId>
             <version>1.2.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>${vault.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!--   BentoBox dependencies.     -->
         <dependency>
