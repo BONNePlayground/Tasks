@@ -253,4 +253,8 @@ public class Constants
      * Reference string to task parameter in translations.
      */
     public static final String TASK = "[task]";
+
+    public static final String DATE = "[date]";
+
+    public static final String COOL_DOWN = "[cool_down]";
 }
