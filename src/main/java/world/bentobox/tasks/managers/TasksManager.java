@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
@@ -245,6 +247,82 @@ public class TasksManager
 // ---------------------------------------------------------------------
 // Section: User related data
 // ---------------------------------------------------------------------
+
+
+    /**
+     * This method returns list of all tasks per given world.
+     * @param world World in which tasks must be returned.
+     * @return Sorted task list.
+     */
+    public List<TaskObject> getAllTasks(World world)
+    {
+        String gameMode = this.addon.getPlugin().getIWM().getAddon(world).map(
+            gameModeAddon -> gameModeAddon.getDescription().getName()).orElse("");
+
+        if (gameMode.isEmpty())
+        {
+            // If not a gamemode world then return.
+            return Collections.emptyList();
+        }
+
+        // Filter Tasks for the cache.
+        // Get tasks for current gamemode.
+        // Sort by task name.
+        return this.taskCache.values().stream().
+            filter(task -> task.getUniqueId().startsWith(gameMode.toLowerCase())).
+            sorted(Comparator.comparing(TaskObject::getName)).
+            collect(Collectors.toList());
+    }
+
+
+    /**
+     * This method returns available tasks for the given islandData.
+     * @param world World where tasks must be searched.
+     * @param islandData IslandData that contains some info.
+     * @return List of tasks objects that are available for user.
+     */
+    public List<TaskObject> getAvailableTaskList(World world, @Nullable TaskDataObject islandData)
+    {
+        // Optimization could be done by generating bundles for each situation, but currently I do not
+        // think it should be an actual problem here.
+
+        Stream<TaskObject> taskObjectList =
+            this.getAllTasks(world).stream().
+                filter(TaskObject::isEnabled).
+                filter(TaskObject::isStarted).
+                filter(TaskObject::isNotFinished);
+
+        if (islandData != null)
+        {
+            // Owner bundle has larger priority then island bundle.
+            if (islandData.getOwnerBundle() != null &&
+                this.taskBundleCache.containsKey(islandData.getOwnerBundle()))
+            {
+                TaskBundleObject bundle = this.taskBundleCache.get(islandData.getOwnerBundle());
+
+                return taskObjectList.
+                    filter(generatorTier -> bundle.getTaskSet().contains(generatorTier.getUniqueId())).
+                    collect(Collectors.toList());
+            }
+            else if (islandData.getIslandBundle() != null &&
+                this.taskBundleCache.containsKey(islandData.getIslandBundle()))
+            {
+                TaskBundleObject bundle = this.taskBundleCache.get(islandData.getIslandBundle());
+
+                return taskObjectList.
+                    filter(generatorTier -> bundle.getTaskSet().contains(generatorTier.getUniqueId())).
+                    collect(Collectors.toList());
+            }
+            else
+            {
+                return taskObjectList.collect(Collectors.toList());
+            }
+        }
+        else
+        {
+            return taskObjectList.collect(Collectors.toList());
+        }
+    }
 
 
     /**
@@ -701,36 +779,32 @@ public class TasksManager
         if (islandData.getActiveTaskCount() > 0 &&
             islandData.getActiveTasks().size() > islandData.getActiveTaskCount())
         {
-            // To many active tasks.
+            Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "too-many-active-tasks",
+                Constants.NUMBER, String.valueOf(islandData.getActiveTaskCount())));
             return false;
         }
 
         if (islandData.getActiveTasks().contains(taskObject.getUniqueId()))
         {
+            Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "task-already-active"));
             // Task is already started
             return false;
         }
 
-        Optional<StartDateOption> startDate = taskObject.getOptionList().stream().
-            filter(option -> Option.OptionType.START_DATE.equals(option.getType())).
-            map(option -> (StartDateOption) option).
-            findFirst();
-
-        if (startDate.isPresent() && !startDate.get().getStartDate().before(
-            Calendar.getInstance(this.addon.getSettings().getTimeZone()).getTime()))
+        if (!taskObject.isStarted())
         {
+            Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "task-not-started-yet",
+                Constants.DATE, String.valueOf(taskObject.getStartDate())));
+
             // Task is not started by date.
             return false;
         }
 
-        Optional<EndDateOption> endDate = taskObject.getOptionList().stream().
-            filter(option -> Option.OptionType.END_DATE.equals(option.getType())).
-            map(option -> (EndDateOption) option).
-            findFirst();
-
-        if (endDate.isPresent() && !endDate.get().getEndDate().after(
-            Calendar.getInstance(this.addon.getSettings().getTimeZone()).getTime()))
+        if (taskObject.isFinished())
         {
+            Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "task-already-finished",
+                Constants.DATE, String.valueOf(taskObject.getFinishDate())));
+
             // Task is already closed by date.
             return false;
         }
@@ -743,28 +817,26 @@ public class TasksManager
             boolean completed = islandData.isTaskCompleted(taskObject.getUniqueId());
             long numberOfCompletion = islandData.getNumberOfCompletions(taskObject.getUniqueId());
 
-            if (completed && taskObject.getOptionList().stream().
-                filter(option -> Option.OptionType.REPEATABLE.equals(option.getType())).
-                map(option -> ((RepeatableOption) option).isRepeatable() ?
-                    ((RepeatableOption) option).getNumberOfRepeats() : 1).
-                findFirst().
-                orElse(1) <= numberOfCompletion)
+            if (completed && !taskObject.isRepeatable() || taskObject.getRepeats() <= numberOfCompletion)
             {
+                Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "max-completion-count-reached"));
+
                 // Task is not repeatable or repeat count is reached.
                 return false;
             }
 
-            Optional<CoolDownOption> coolDown = taskObject.getOptionList().stream().
-                filter(option -> Option.OptionType.COOL_DOWN.equals(option.getType())).
-                map(option -> (CoolDownOption) option).
-                findFirst();
+            long coolDown = taskObject.getCoolDown();
 
-            if (coolDown.isPresent())
+            if (coolDown > 0)
             {
                 long lastCompletionTime = islandData.getLastCompletionTime(taskObject.getUniqueId());
 
-                if (new Date().getTime() < lastCompletionTime + coolDown.get().getCoolDown())
+                if (new Date().getTime() < lastCompletionTime + coolDown)
                 {
+                    Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "cooldown",
+                        Constants.COOL_DOWN, String.valueOf(coolDown),
+                        Constants.NUMBER, String.valueOf(new Date().getTime() - lastCompletionTime - coolDown)));
+
                     // Cooldown time is not passed.
                     return false;
                 }
@@ -772,29 +844,68 @@ public class TasksManager
         }
 
         // Check task requirements
-        return taskObject.getRequirementList().stream().anyMatch(requirement ->
+        return taskObject.getRequirementList().stream().noneMatch(requirement ->
         {
             switch (requirement.getType())
             {
                 case EXPERIENCE -> {
-                    // TODO: Experience Requirement?
-                    return user.getPlayer().getTotalExperience() < 0;
+                    // Check user experience
+                    if (user.getPlayer().getTotalExperience() < 0)
+                    {
+                        Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "not-enough-experience",
+                            Constants.VALUE, String.valueOf(0)));
+                        return true;
+                    }
+
+                    return false;
                 }
                 case LEVEL -> {
                     // Check if user island has large enough level.
-                    return this.getIslandLevel(islandData.getUniqueId()) < ((LevelRequirement) requirement).getLevel();
+                    if (this.getIslandLevel(islandData.getUniqueId()) < ((LevelRequirement) requirement).getLevel())
+                    {
+                        Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "not-enough-level",
+                            Constants.VALUE, String.valueOf(((LevelRequirement) requirement).getLevel())));
+
+                        return true;
+                    }
+
+                    return false;
                 }
                 case MONEY -> {
                     // Check if user has enough balance.
-                    return this.getBalance(user) < ((MoneyRequirement) requirement).getMoney();
+                    if (this.getBalance(user) < ((MoneyRequirement) requirement).getMoney())
+                    {
+                        Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "not-enough-money",
+                            Constants.VALUE, String.valueOf(((MoneyRequirement) requirement).getMoney())));
+
+                        return true;
+                    }
+
+                    return false;
                 }
                 case PERMISSION -> {
                     // Check is user has required permission.
-                    return !user.hasPermission(((PermissionRequirement) requirement).getPermission());
+                    if (!user.hasPermission(((PermissionRequirement) requirement).getPermission()))
+                    {
+                        Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "missing-permission",
+                            Constants.VALUE, ((PermissionRequirement) requirement).getPermission()));
+
+                        return true;
+                    }
+
+                    return false;
                 }
                 case TASK -> {
                     // Check if task is not completed yet.
-                    return !islandData.isTaskCompleted(((TaskRequirement) requirement).getTaskId());
+                    if (!islandData.isTaskCompleted(((TaskRequirement) requirement).getTaskId()))
+                    {
+                        Utils.sendMessage(user, user.getTranslation(Constants.MESSAGES + "missing-task",
+                            Constants.VALUE, ((TaskRequirement) requirement).getTaskId()));
+
+                        return true;
+                    }
+
+                    return false;
                 }
                 default -> {
                     // Default behaviour
