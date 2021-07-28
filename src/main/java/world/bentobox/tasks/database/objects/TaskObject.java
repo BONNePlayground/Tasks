@@ -9,13 +9,12 @@ package world.bentobox.tasks.database.objects;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import world.bentobox.bentobox.database.objects.DataObject;
 import world.bentobox.bentobox.database.objects.Table;
-import world.bentobox.tasks.database.objects.options.Option;
+import world.bentobox.tasks.TasksAddon;
+import world.bentobox.tasks.database.objects.options.*;
 import world.bentobox.tasks.database.objects.requirements.Requirement;
 import world.bentobox.tasks.database.objects.rewards.Reward;
 import world.bentobox.tasks.listeners.tasks.Task;
@@ -116,6 +115,122 @@ public class TaskObject implements DataObject
     public void removeReward(Reward reward)
     {
         this.rewardList.remove(reward);
+    }
+
+
+    /**
+     * This method returns if given task is started.
+     * @return {@code true} if task has start date option and it is smaller than current date, {@code false} otherwise.
+     */
+    public boolean isStarted()
+    {
+        Optional<StartDateOption> startDate = this.getOptionList().stream().
+            filter(option -> Option.OptionType.START_DATE.equals(option.getType())).
+            map(option -> (StartDateOption) option).
+            findFirst();
+
+        // Task is not started by date.
+        return startDate.isEmpty() || startDate.get().getStartDate().before(
+            Calendar.getInstance(this.addon.getSettings().getTimeZone()).getTime());
+    }
+
+
+    /**
+     * This method returns if given task is finished.
+     * @return {@code true} if task has end date option and it is smaller than current date, {@code false} otherwise.
+     */
+    public boolean isFinished()
+    {
+        Optional<EndDateOption> endDate = this.getOptionList().stream().
+            filter(option -> Option.OptionType.END_DATE.equals(option.getType())).
+            map(option -> (EndDateOption) option).
+            findFirst();
+
+        // Task is already closed by date.
+        return endDate.isPresent() && endDate.get().getEndDate().before(
+            Calendar.getInstance(this.addon.getSettings().getTimeZone()).getTime());
+    }
+
+
+    /**
+     * This method returns if task is not finished yet.
+     * @return {@code true} if task is not finished, {@code false} otherwise.
+     */
+    public boolean isNotFinished()
+    {
+        return !this.isFinished();
+    }
+
+
+    /**
+     * @return Long of date when task starts.
+     */
+    public long getStartDate()
+    {
+        Optional<StartDateOption> startDate = this.getOptionList().stream().
+            filter(option -> Option.OptionType.START_DATE.equals(option.getType())).
+            map(option -> (StartDateOption) option).
+            findFirst();
+
+        // Task is not started by date.
+        return startDate.isEmpty() ? 0 : startDate.get().getStartDate().getTime();
+    }
+
+
+    /**
+     * @return Long of date when task ends.
+     */
+    public long getFinishDate()
+    {
+        Optional<EndDateOption> endDate = this.getOptionList().stream().
+            filter(option -> Option.OptionType.END_DATE.equals(option.getType())).
+            map(option -> (EndDateOption) option).
+            findFirst();
+
+        // Task is not started by date.
+        return endDate.isEmpty() ? 0 : endDate.get().getEndDate().getTime();
+    }
+
+
+    /**
+     * @return Long for cool down between repeats.
+     */
+    public long getCoolDown()
+    {
+        Optional<CoolDownOption> coolDown = this.getOptionList().stream().
+            filter(option -> Option.OptionType.COOL_DOWN.equals(option.getType())).
+            map(option -> (CoolDownOption) option).
+            findFirst();
+
+        return coolDown.isEmpty() ? 0 : coolDown.get().getCoolDown();
+    }
+
+
+    /**
+     * @return Long for number of repeats.
+     */
+    public long getRepeats()
+    {
+        Optional<RepeatableOption> repeatable = this.getOptionList().stream().
+            filter(option -> Option.OptionType.REPEATABLE.equals(option.getType())).
+            map(option -> (RepeatableOption) option).
+            findFirst();
+
+        return repeatable.isEmpty() ? 1 : repeatable.get().getNumberOfRepeats();
+    }
+
+
+    /**
+     * @return Boolean if task is repeatable.
+     */
+    public boolean isRepeatable()
+    {
+        Optional<RepeatableOption> repeatable = this.getOptionList().stream().
+            filter(option -> Option.OptionType.REPEATABLE.equals(option.getType())).
+            map(option -> (RepeatableOption) option).
+            findFirst();
+
+        return repeatable.isPresent() && repeatable.get().isRepeatable();
     }
 
 
@@ -280,6 +395,11 @@ public class TaskObject implements DataObject
 // Section: Variables
 // ---------------------------------------------------------------------
 
+
+    /**
+     * Task addon instance.
+     */
+    private final TasksAddon addon = TasksAddon.getInstance();
 
     /**
      * UniqueId for the object.
