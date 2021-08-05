@@ -9,9 +9,7 @@ package world.bentobox.tasks.listeners.tasks;
 
 import com.google.gson.annotations.Expose;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
