@@ -10,15 +10,18 @@ package world.bentobox.tasks.listeners.tasks;
 import com.google.gson.annotations.Expose;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityBreedEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import java.util.Set;
 
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.tasks.TasksAddon;
+import world.bentobox.tasks.database.objects.TaskDataObject;
+import world.bentobox.tasks.managers.TasksManager;
 
 
 /**
@@ -58,7 +61,46 @@ public class EntityBreedTask extends Task implements Listener
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onEntityBreed(EntityBreedEvent event)
     {
+        if (event.getBreeder() == null || !EntityType.PLAYER.equals(event.getBreeder().getType()))
+        {
+            // Interested only in Player entities.
+            return;
+        }
 
+        if (this.whitelist && !this.getEntityType().contains(event.getEntity().getType()) ||
+            !this.whitelist && this.getEntityType().contains(event.getEntity().getType()))
+        {
+            // Not a whitelisted or is blacklisted entities.
+            return;
+        }
+
+        Player player = (Player) event.getBreeder();
+
+        TasksManager addonManager = TasksAddon.getInstance().getAddonManager();
+        TaskDataObject islandData = addonManager.getIslandData(player, player.getWorld());
+
+        if (islandData == null)
+        {
+            // There is no data about this player.
+            return;
+        }
+
+        if (!islandData.getActiveTasks().contains(this.getTaskId()))
+        {
+            // This is not active task for a player.
+            return;
+        }
+
+        double progress = islandData.increaseProgress(this.getTaskId(), 1);
+
+        if (progress >= this.entityCount)
+        {
+            addonManager.onTaskFinish(this.getTaskId(), player, islandData);
+        }
+        else
+        {
+            addonManager.onUpdateProgress(this.getTaskId(), player, islandData);
+        }
     }
 
 

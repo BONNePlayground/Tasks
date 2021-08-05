@@ -9,7 +9,6 @@ package world.bentobox.tasks.listeners.tasks;
 
 import com.google.gson.annotations.Expose;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -17,8 +16,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import java.util.Set;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.tasks.TasksAddon;

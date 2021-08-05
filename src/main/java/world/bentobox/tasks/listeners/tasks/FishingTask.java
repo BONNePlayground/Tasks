@@ -9,16 +9,20 @@ package world.bentobox.tasks.listeners.tasks;
 
 import com.google.gson.annotations.Expose;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.EntityType;
+import org.bukkit.Material;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.inventory.ItemStack;
 import java.util.Set;
 
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.tasks.TasksAddon;
+import world.bentobox.tasks.database.objects.TaskDataObject;
+import world.bentobox.tasks.managers.TasksManager;
 
 
 /**
@@ -42,7 +46,7 @@ public class FishingTask extends Task implements Listener
      * @param whitelist the whitelist
      * @param itemCount the item count
      */
-    public FishingTask(Set<ItemStack> itemSet, boolean whitelist, int itemCount)
+    public FishingTask(Set<Material> itemSet, boolean whitelist, int itemCount)
     {
         this.itemSet = itemSet;
         this.whitelist = whitelist;
@@ -58,7 +62,54 @@ public class FishingTask extends Task implements Listener
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onFishing(PlayerFishEvent event)
     {
+        if (!PlayerFishEvent.State.CAUGHT_FISH.equals(event.getState()))
+        {
+            // Interested only in Player entities.
+            return;
+        }
 
+        if (event.getCaught() == null || !(event.getCaught() instanceof Item))
+        {
+            // Interested if "fish" is item.
+            return;
+        }
+
+        Material caughtType = ((Item) event.getCaught()).getItemStack().getType();
+
+        if (this.whitelist && !this.getItemSet().contains(caughtType) ||
+            !this.whitelist && this.getItemSet().contains(caughtType))
+        {
+            // Not a whitelisted or is blacklisted entities.
+            return;
+        }
+
+        Player player = event.getPlayer();
+
+        TasksManager addonManager = TasksAddon.getInstance().getAddonManager();
+        TaskDataObject islandData = addonManager.getIslandData(player, player.getWorld());
+
+        if (islandData == null)
+        {
+            // There is no data about this player.
+            return;
+        }
+
+        if (!islandData.getActiveTasks().contains(this.getTaskId()))
+        {
+            // This is not active task for a player.
+            return;
+        }
+
+        double progress = islandData.increaseProgress(this.getTaskId(), 1);
+
+        if (progress >= this.itemCount)
+        {
+            addonManager.onTaskFinish(this.getTaskId(), player, islandData);
+        }
+        else
+        {
+            addonManager.onUpdateProgress(this.getTaskId(), player, islandData);
+        }
     }
 
 
@@ -92,7 +143,7 @@ public class FishingTask extends Task implements Listener
      *
      * @return the item set
      */
-    public Set<ItemStack> getItemSet()
+    public Set<Material> getItemSet()
     {
         return itemSet;
     }
@@ -103,7 +154,7 @@ public class FishingTask extends Task implements Listener
      *
      * @param itemSet the item set
      */
-    public void setItemSet(Set<ItemStack> itemSet)
+    public void setItemSet(Set<Material> itemSet)
     {
         this.itemSet = itemSet;
     }
@@ -161,7 +212,7 @@ public class FishingTask extends Task implements Listener
      * Item Set.
      */
     @Expose
-    private Set<ItemStack> itemSet;
+    private Set<Material> itemSet;
 
     /**
      * White list of blacklist.
