@@ -42,8 +42,9 @@ public class DamageReceiveTask extends Task implements Listener
      *
      * @param damageAmount the entity count
      */
-    public DamageReceiveTask(double damageAmount)
+    public DamageReceiveTask(String taskId, double damageAmount)
     {
+        super(taskId);
         this.damageAmount = damageAmount;
     }
 

@@ -45,8 +45,9 @@ public class TacticalFishingTask extends Task implements Listener
      * @param whitelist the whitelist
      * @param entityCount the entity count
      */
-    public TacticalFishingTask(Set<EntityType> entityTypes, boolean whitelist, int entityCount)
+    public TacticalFishingTask(String taskId, Set<EntityType> entityTypes, boolean whitelist, int entityCount)
     {
+        super(taskId);
         this.entityTypes = entityTypes;
         this.whitelist = whitelist;
         this.entityCount = entityCount;

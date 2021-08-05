@@ -47,8 +47,9 @@ public class ConsumeTask extends Task implements Listener
      * @param whitelist the whitelist
      * @param itemCount the item count
      */
-    public ConsumeTask(Set<Material> materialSet, boolean whitelist, int itemCount)
+    public ConsumeTask(String taskId, Set<Material> materialSet, boolean whitelist, int itemCount)
     {
+        super(taskId);
         this.materialSet = materialSet;
         this.whitelist = whitelist;
         this.itemCount = itemCount;

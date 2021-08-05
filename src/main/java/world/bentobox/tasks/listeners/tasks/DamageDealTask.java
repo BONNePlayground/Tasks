@@ -42,8 +42,9 @@ public class DamageDealTask extends Task implements Listener
      *
      * @param damageAmount the entity damage
      */
-    public DamageDealTask(double damageAmount)
+    public DamageDealTask(String taskId, double damageAmount)
     {
+        super(taskId);
         this.damageAmount = damageAmount;
     }
 

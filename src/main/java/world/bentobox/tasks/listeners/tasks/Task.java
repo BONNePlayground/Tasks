@@ -20,6 +20,26 @@ import world.bentobox.tasks.database.adapters.TaskAdapter;
 public abstract class Task
 {
     /**
+     * Instantiates a new Task.
+     */
+    public Task()
+    {
+        // Instance for gson.
+    }
+
+
+    /**
+     * Instantiates a new Task.
+     *
+     * @param taskId the task id
+     */
+    public Task(String taskId)
+    {
+        this.taskId = taskId;
+    }
+
+
+    /**
      * This method is called on task starting.
      * Allows to enable listeners.
      */

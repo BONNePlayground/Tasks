@@ -46,8 +46,9 @@ public class FishingTask extends Task implements Listener
      * @param whitelist the whitelist
      * @param itemCount the item count
      */
-    public FishingTask(Set<Material> itemSet, boolean whitelist, int itemCount)
+    public FishingTask(String taskId, Set<Material> itemSet, boolean whitelist, int itemCount)
     {
+        super(taskId);
         this.itemSet = itemSet;
         this.whitelist = whitelist;
         this.itemCount = itemCount;

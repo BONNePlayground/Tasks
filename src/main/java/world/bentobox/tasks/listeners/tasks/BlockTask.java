@@ -46,8 +46,9 @@ public class BlockTask extends Task implements Listener
      * @param blockCount the block count
      * @param place the place
      */
-    public BlockTask(Set<Material> materialSet, boolean whitelist, int blockCount, boolean place)
+    public BlockTask(String taskId, Set<Material> materialSet, boolean whitelist, int blockCount, boolean place)
     {
+        super(taskId);
         this.materialSet = materialSet;
         this.whitelist = whitelist;
         this.blockCount = blockCount;

@@ -45,8 +45,9 @@ public class EntityKillTask extends Task implements Listener
      * @param whitelist the whitelist
      * @param entityCount the entity count
      */
-    public EntityKillTask(Set<EntityType> entityType, boolean whitelist, int entityCount)
+    public EntityKillTask(String taskId, Set<EntityType> entityType, boolean whitelist, int entityCount)
     {
+        super(taskId);
         this.entityType = entityType;
         this.whitelist = whitelist;
         this.entityCount = entityCount;
