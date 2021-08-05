@@ -117,6 +117,13 @@ public class BlockTask extends Task implements Listener
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event)
     {
+        if (this.whitelist && !this.getMaterialSet().contains(event.getBlock().getType()) ||
+            !this.whitelist && this.getMaterialSet().contains(event.getBlock().getType()))
+        {
+            // Not a whitelisted or is blacklisted material.
+            return;
+        }
+
         TasksManager addonManager = TasksAddon.getInstance().getAddonManager();
         TaskDataObject islandData = addonManager.getIslandData(event.getPlayer(), event.getBlock().getWorld());
 
@@ -129,13 +136,6 @@ public class BlockTask extends Task implements Listener
         if (!islandData.getActiveTasks().contains(this.getTaskId()))
         {
             // This is not active task for a player.
-            return;
-        }
-
-        if (this.whitelist && !this.getMaterialSet().contains(event.getBlock().getType()) ||
-            !this.whitelist && this.getMaterialSet().contains(event.getBlock().getType()))
-        {
-            // Not a whitelisted or is blacklisted material.
             return;
         }
 
