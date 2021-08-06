@@ -12,6 +12,9 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +28,7 @@ import world.bentobox.tasks.database.objects.TaskObject;
 import world.bentobox.tasks.database.objects.options.DescriptionOption;
 import world.bentobox.tasks.database.objects.requirements.PermissionRequirement;
 import world.bentobox.tasks.database.objects.rewards.ExperienceReward;
-import world.bentobox.tasks.listeners.tasks.BlockTask;
+import world.bentobox.tasks.listeners.tasks.*;
 import world.bentobox.tasks.utils.Constants;
 import world.bentobox.tasks.utils.Utils;
 
@@ -294,24 +297,92 @@ public class ImportManager
             switch (TypeConstant.valueOf(section.getString(DataConstant.TYPE.getValue())))
             {
                 case BLOCK_BREAK -> {
-                    BlockTask blockTask = new BlockTask();
-                    blockTask.setPlace(false);
-                    blockTask.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
-                    blockTask.setBlockCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
-                    blockTask.setMaterialSet(this.readMaterials(taskObject,
+                    BlockTask task = new BlockTask();
+                    task.setPlace(false);
+                    task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
+                    task.setBlockCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
+                    task.setMaterialSet(this.readMaterials(taskObject,
                         section.getConfigurationSection(DataConstant.BLOCKS.getValue())));
 
-                    taskObject.setTask(blockTask);
+                    task.setTaskId(taskObject.getUniqueId());
+                    taskObject.setTask(task);
                 }
                 case BLOCK_PLACE -> {
-                    BlockTask blockTask = new BlockTask();
-                    blockTask.setPlace(true);
-                    blockTask.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
-                    blockTask.setBlockCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
-                    blockTask.setMaterialSet(this.readMaterials(taskObject,
+                    BlockTask task = new BlockTask();
+                    task.setPlace(true);
+                    task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
+                    task.setBlockCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
+                    task.setMaterialSet(this.readMaterials(taskObject,
                         section.getConfigurationSection(DataConstant.BLOCKS.getValue())));
 
-                    taskObject.setTask(blockTask);
+                    task.setTaskId(taskObject.getUniqueId());
+                    taskObject.setTask(task);
+                }
+                case CONSUME -> {
+                    ConsumeTask task = new ConsumeTask();
+                    task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
+                    task.setItemCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
+                    task.setMaterialSet(this.readMaterials(taskObject,
+                        section.getConfigurationSection(DataConstant.MATERIALS.getValue())));
+                    task.setPotionEffectTypes(this.readPotions(taskObject,
+                        section.getConfigurationSection(DataConstant.POTIONS.getValue())));
+
+                    task.setTaskId(taskObject.getUniqueId());
+                    taskObject.setTask(task);
+                }
+                case DAMAGE_DEAL -> {
+                    DamageDealTask task = new DamageDealTask();
+                    task.setDamageAmount(section.getDouble(DataConstant.NUMBER.getValue(), 0));
+
+                    task.setTaskId(taskObject.getUniqueId());
+                    taskObject.setTask(task);
+                }
+                case DAMAGE_RECEIVE -> {
+                    DamageReceiveTask task = new DamageReceiveTask();
+                    task.setDamageAmount(section.getDouble(DataConstant.NUMBER.getValue(), 0));
+
+                    task.setTaskId(taskObject.getUniqueId());
+                    taskObject.setTask(task);
+                }
+                case ENTITY_BREED -> {
+                    EntityBreedTask task = new EntityBreedTask();
+                    task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
+                    task.setEntityCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
+                    task.setEntityType(this.readEntities(taskObject,
+                        section.getConfigurationSection(DataConstant.ENTITIES.getValue())));
+
+                    task.setTaskId(taskObject.getUniqueId());
+                    taskObject.setTask(task);
+                }
+                case ENTITY_KILL -> {
+                    EntityKillTask task = new EntityKillTask();
+                    task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
+                    task.setEntityCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
+                    task.setEntityType(this.readEntities(taskObject,
+                        section.getConfigurationSection(DataConstant.ENTITIES.getValue())));
+
+                    task.setTaskId(taskObject.getUniqueId());
+                    taskObject.setTask(task);
+                }
+                case FISHING -> {
+                    FishingTask task = new FishingTask();
+                    task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
+                    task.setItemCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
+                    task.setItemSet(this.readMaterials(taskObject,
+                        section.getConfigurationSection(DataConstant.MATERIALS.getValue())));
+
+                    task.setTaskId(taskObject.getUniqueId());
+                    taskObject.setTask(task);
+                }
+                case TACTICAL_FISHING -> {
+                    TacticalFishingTask task = new TacticalFishingTask();
+                    task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
+                    task.setEntityCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
+                    task.setEntityTypes(this.readEntities(taskObject,
+                        section.getConfigurationSection(DataConstant.ENTITIES.getValue())));
+
+                    task.setTaskId(taskObject.getUniqueId());
+                    taskObject.setTask(task);
                 }
             }
         }
@@ -339,13 +410,75 @@ public class ImportManager
                 catch (Exception e)
                 {
                     this.addon.logWarning("Unknown material (" + materialKey +
-                        ") in template blocks section for tier " +
+                        ") in template blocks section for task " +
                         object.getUniqueId() + ". Skipping...");
                 }
             }
         }
 
         return materialSet;
+    }
+
+
+    /**
+     * This method creates a set of entities from given configuration section.
+     * @param object Object that will be reported as failed if cannot parse entities.
+     * @param section Section that contains entities.
+     * @return Set of entities from config section.
+     */
+    private Set<EntityType> readEntities(TaskObject object, ConfigurationSection section)
+    {
+        Set<EntityType> entitySet = new HashSet<>();
+
+        if (section != null)
+        {
+            for (String entityKey : section.getKeys(false))
+            {
+                try
+                {
+                    entitySet.add(EntityType.valueOf(entityKey.toUpperCase()));
+                }
+                catch (Exception e)
+                {
+                    this.addon.logWarning("Unknown entityType (" + entityKey +
+                        ") in template entity section for task " +
+                        object.getUniqueId() + ". Skipping...");
+                }
+            }
+        }
+
+        return entitySet;
+    }
+
+
+    /**
+     * This method creates a set of potions from given configuration section.
+     * @param object Object that will be reported as failed if cannot parse potions.
+     * @param section Section that contains potions.
+     * @return Set of potions from config section.
+     */
+    private Set<PotionEffectType> readPotions(TaskObject object, ConfigurationSection section)
+    {
+        Set<PotionEffectType> potionSet = new HashSet<>();
+
+        if (section != null)
+        {
+            for (String potionKey : section.getKeys(false))
+            {
+                try
+                {
+                    potionSet.add(PotionEffectType.getByName(potionKey.toLowerCase()));
+                }
+                catch (Exception e)
+                {
+                    this.addon.logWarning("Unknown potionType (" + potionKey +
+                        ") in template potions section for task " +
+                        object.getUniqueId() + ". Skipping...");
+                }
+            }
+        }
+
+        return potionSet;
     }
 
 
@@ -546,6 +679,13 @@ public class ImportManager
     {
         BLOCK_BREAK,
         BLOCK_PLACE,
+        CONSUME,
+        DAMAGE_DEAL,
+        DAMAGE_RECEIVE,
+        ENTITY_BREED,
+        ENTITY_KILL,
+        FISHING,
+        TACTICAL_FISHING
     }
 
 
@@ -556,6 +696,9 @@ public class ImportManager
     {
         TYPE("type"),
         BLOCKS("blocks"),
+        ENTITIES("entities"),
+        MATERIALS("materials"),
+        POTIONS("potions"),
         WHITELIST("whitelist"),
         NUMBER("number");
 
