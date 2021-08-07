@@ -37,7 +37,10 @@ import world.bentobox.tasks.database.objects.requirements.LevelRequirement;
 import world.bentobox.tasks.database.objects.requirements.MoneyRequirement;
 import world.bentobox.tasks.database.objects.requirements.PermissionRequirement;
 import world.bentobox.tasks.database.objects.requirements.TaskRequirement;
+import world.bentobox.tasks.database.objects.rewards.CommandReward;
 import world.bentobox.tasks.database.objects.rewards.ExperienceReward;
+import world.bentobox.tasks.database.objects.rewards.ItemReward;
+import world.bentobox.tasks.database.objects.rewards.MoneyReward;
 import world.bentobox.tasks.listeners.tasks.*;
 import world.bentobox.tasks.utils.Constants;
 import world.bentobox.tasks.utils.Utils;
@@ -721,15 +724,112 @@ public class ImportManager
     {
         if (section != null)
         {
-            if (section.contains(RewardConstant.EXPERIENCE.getValue()))
-            {
-                long experience = section.getLong(RewardConstant.EXPERIENCE.getValue(), 0);
+            ConfigurationSection teamSection = section.getConfigurationSection(RewardConstant.TEAM.getValue());
 
-                if (experience > 0)
+            if (teamSection != null)
+            {
+                this.populateRewards(taskObject, teamSection, true);
+            }
+
+            ConfigurationSection playerSection = section.getConfigurationSection(RewardConstant.PLAYER.getValue());
+
+            if (playerSection != null)
+            {
+                this.populateRewards(taskObject, playerSection, false);
+            }
+        }
+    }
+
+
+    /**
+     * This method populates task object with rewards from given section.
+     * @param taskObject Object that must be populated.
+     * @param section Section that contains options.
+     * @param teamReward Indicates if this is team reward.
+     */
+    private void populateRewards(TaskObject taskObject, ConfigurationSection section, boolean teamReward)
+    {
+        // Experience reward population
+        if (section.contains(RewardConstant.EXPERIENCE.getValue()))
+        {
+            long experience = section.getLong(RewardConstant.EXPERIENCE.getValue(), 0);
+
+            if (experience > 0)
+            {
+                ExperienceReward reward = new ExperienceReward();
+                reward.setExperience(experience);
+                reward.setTeamPrize(teamReward);
+                taskObject.addReward(reward);
+            }
+        }
+
+        // Experience reward population
+        if (section.contains(RewardConstant.MONEY.getValue()))
+        {
+            double money = section.getDouble(RewardConstant.MONEY.getValue(), 0.0);
+
+            if (money > 0)
+            {
+                MoneyReward reward = new MoneyReward();
+                reward.setMoney(money);
+                reward.setTeamPrize(teamReward);
+                taskObject.addReward(reward);
+            }
+        }
+
+        // Item reward population
+        if (section.contains(RewardConstant.ITEMS.getValue()))
+        {
+            if (section.isList(RewardConstant.ITEMS.getValue()))
+            {
+                section.getStringList(RewardConstant.ITEMS.getValue()).stream().
+                    map(ItemParser::parse).
+                    filter(Objects::nonNull).
+                    forEach(item -> {
+                        ItemReward reward = new ItemReward();
+                        reward.setItemStack(item);
+                        reward.setTeamPrize(teamReward);
+                        taskObject.addReward(reward);
+                    });
+            }
+            else if (section.isString(RewardConstant.ITEMS.getValue()))
+            {
+                ItemStack item = ItemParser.parse(section.getString(RewardConstant.ITEMS.getValue()));
+
+                if (item != null)
                 {
-                    ExperienceReward reward = new ExperienceReward();
-                    reward.setExperience(experience);
-                    // Add to taskObject
+                    ItemReward reward = new ItemReward();
+                    reward.setItemStack(item);
+                    reward.setTeamPrize(teamReward);
+                    taskObject.addReward(reward);
+                }
+            }
+        }
+
+        // Command reward population
+        if (section.contains(RewardConstant.COMMAND.getValue()))
+        {
+            if (section.isList(RewardConstant.COMMAND.getValue()))
+            {
+                section.getStringList(RewardConstant.COMMAND.getValue()).
+                    forEach(command -> {
+                        CommandReward reward = new CommandReward();
+                        reward.setCommand(command);
+                        reward.setTeamPrize(teamReward);
+                        taskObject.addReward(reward);
+                    });
+
+
+            }
+            else if (section.isString(RewardConstant.COMMAND.getValue()))
+            {
+                String command = section.getString(RewardConstant.COMMAND.getValue());
+
+                if (command != null)
+                {
+                    CommandReward reward = new CommandReward();
+                    reward.setCommand(command);
+                    reward.setTeamPrize(teamReward);
                     taskObject.addReward(reward);
                 }
             }
@@ -990,7 +1090,9 @@ public class ImportManager
         EXPERIENCE("experience"),
         MONEY("money"),
         ITEMS("items"),
-        COMMAND("commands");
+        COMMAND("commands"),
+        TEAM("team"),
+        PLAYER("player");
 
         /**
          * @param value String constant.
