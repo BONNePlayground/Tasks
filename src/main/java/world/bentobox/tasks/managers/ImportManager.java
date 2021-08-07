@@ -7,25 +7,32 @@
 package world.bentobox.tasks.managers;
 
 
+import com.google.common.base.Enums;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.Month;
 import java.util.*;
 
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.localization.TextVariables;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.util.ItemParser;
 import world.bentobox.tasks.TasksAddon;
 import world.bentobox.tasks.database.objects.TaskObject;
-import world.bentobox.tasks.database.objects.options.DescriptionOption;
+import world.bentobox.tasks.database.objects.options.*;
 import world.bentobox.tasks.database.objects.requirements.PermissionRequirement;
 import world.bentobox.tasks.database.objects.rewards.ExperienceReward;
 import world.bentobox.tasks.listeners.tasks.*;
@@ -252,34 +259,167 @@ public class ImportManager
                 }
             }
 
+            // Check start-message
+            if (section.contains(OptionConstant.START_MESSAGE.getValue()))
+            {
+                ConfigurationSection startConfiguration =
+                    section.getConfigurationSection(OptionConstant.START_MESSAGE.getValue());
+
+                String value = startConfiguration.getString(DataConstant.TYPE.getValue(),
+                    StartMessageOption.Type.TEAM.name());
+
+                StartMessageOption option = new StartMessageOption();
+                option.setMessageType(Enums.getIfPresent(StartMessageOption.Type.class, value).
+                    or(StartMessageOption.Type.TEAM));
+
+                if (startConfiguration.isList(DataConstant.MESSAGE.getValue()))
+                {
+                    StringBuilder builder = new StringBuilder();
+                    startConfiguration.getStringList(DataConstant.MESSAGE.getValue()).forEach(line -> builder.append(line).append("\n"));
+                    option.setStartMessage(builder.toString());
+                }
+                else if (startConfiguration.isString(DataConstant.MESSAGE.getValue()))
+                {
+                    option.setStartMessage(startConfiguration.getString(DataConstant.MESSAGE.getValue()));
+                }
+
+                taskObject.addOption(option);
+            }
+
+            // Check finish-message
+            if (section.contains(OptionConstant.FINISH_MESSAGE.getValue()))
+            {
+                ConfigurationSection finishConfiguration =
+                    section.getConfigurationSection(OptionConstant.FINISH_MESSAGE.getValue());
+
+                String value = finishConfiguration.getString(DataConstant.TYPE.getValue(),
+                    FinishMessageOption.Type.TEAM.name());
+
+                FinishMessageOption option = new FinishMessageOption();
+                option.setMessageType(Enums.getIfPresent(FinishMessageOption.Type.class, value).
+                    or(FinishMessageOption.Type.TEAM));
+
+                if (finishConfiguration.isList(DataConstant.MESSAGE.getValue()))
+                {
+                    StringBuilder builder = new StringBuilder();
+                    finishConfiguration.getStringList(DataConstant.MESSAGE.getValue()).forEach(line -> builder.append(line).append("\n"));
+                    option.setFinishMessage(builder.toString());
+                }
+                else if (finishConfiguration.isString(DataConstant.MESSAGE.getValue()))
+                {
+                    option.setFinishMessage(finishConfiguration.getString(DataConstant.MESSAGE.getValue()));
+                }
+
+                taskObject.addOption(option);
+            }
+
+            // Check icon
             if (section.contains(OptionConstant.ICON.getValue()))
             {
+                ItemStack parsedIcon = ItemParser.parse(section.getString(OptionConstant.ICON.getValue()));
 
+                if (parsedIcon != null)
+                {
+                    IconOption option = new IconOption();
+                    option.setIcon(parsedIcon);
+                    taskObject.addOption(option);
+                }
             }
 
+            // Check start date
             if (section.contains(OptionConstant.START_DATE.getValue()))
             {
+                DateFormat dateFormat = new SimpleDateFormat(this.addon.getSettings().getDateFormat());
 
+                try
+                {
+                    StartDateOption option = new StartDateOption();
+                    option.setStartDate(dateFormat.parse(section.getString(OptionConstant.START_DATE.getValue())));
+                    taskObject.addOption(option);
+                }
+                catch (ParseException e)
+                {
+                    this.addon.logWarning("Cannot parse Starting Date.");
+                }
             }
 
+            // Check end date
             if (section.contains(OptionConstant.END_DATE.getValue()))
             {
+                DateFormat dateFormat = new SimpleDateFormat(this.addon.getSettings().getDateFormat());
 
+                try
+                {
+                    EndDateOption option = new EndDateOption();
+                    option.setEndDate(dateFormat.parse(section.getString(OptionConstant.END_DATE.getValue())));
+                    taskObject.addOption(option);
+                }
+                catch (ParseException e)
+                {
+                    this.addon.logWarning("Cannot parse End Date.");
+                }
             }
 
+            // Check repeatable option
             if (section.contains(OptionConstant.REPEATABLE.getValue()))
             {
-
+                RepeatableOption option = new RepeatableOption();
+                int value = section.getInt(OptionConstant.REPEATABLE.getValue(), 1);
+                option.setRepeatable(value != 1);
+                option.setNumberOfRepeats(value);
+                taskObject.addOption(option);
             }
 
+            // Check regular task reset.
             if (section.contains(OptionConstant.REGULARITY.getValue()))
             {
+                ConfigurationSection regularity =
+                    section.getConfigurationSection(OptionConstant.REGULARITY.getValue());
 
+                String type = regularity.getString(DataConstant.TYPE.getValue(), RegularityConstants.NONE.name());
+                RegularityConstants typeConstants = Enums.getIfPresent(RegularityConstants.class, type).
+                    or(RegularityConstants.NONE);
+
+                int hour = Math.max(0, Math.min(23, regularity.getInt(DataConstant.HOUR.getValue(), 0)));
+                int day = Math.max(1, Math.min(31, regularity.getInt(DataConstant.DAY.getValue(), 1)));
+                int month = Math.max(1, Math.min(12, regularity.getInt(DataConstant.MONTH.getValue(), 1)));
+
+                switch (typeConstants)
+                {
+                    case DAILY -> {
+                        DailyResetOption option = new DailyResetOption();
+                        option.setHour(hour);
+                        taskObject.addOption(option);
+                    }
+                    case WEEKLY -> {
+                        WeeklyResetOption option = new WeeklyResetOption();
+                        option.setHour(hour);
+                        option.setDay(DayOfWeek.of(Math.min(7, day)));
+                        taskObject.addOption(option);
+                    }
+                    case MONTHLY -> {
+                        MonthlyResetOption option = new MonthlyResetOption();
+                        option.setHour(hour);
+                        option.setDay(day);
+                        taskObject.addOption(option);
+                    }
+                    case YEARLY -> {
+                        YearlyResetOption option = new YearlyResetOption();
+                        option.setHour(hour);
+                        option.setDay(day);
+                        option.setMonth(Month.of(month));
+                        taskObject.addOption(option);
+                    }
+                }
             }
 
-            if (section.contains(OptionConstant.TIMEOUT.getValue()))
+            // Check task cool down
+            if (section.contains(OptionConstant.COOL_DOWN.getValue()))
             {
-
+                CoolDownOption option = new CoolDownOption();
+                int value = section.getInt(OptionConstant.COOL_DOWN.getValue(), 10);
+                option.setCoolDown(value);
+                taskObject.addOption(option);
             }
         }
     }
@@ -620,6 +760,14 @@ public class ImportManager
          */
         DESCRIPTION("description"),
         /**
+         * Option for setting start message.
+         */
+        START_MESSAGE("start-message"),
+        /**
+         * Option for setting finish message.
+         */
+        FINISH_MESSAGE("finish-message"),
+        /**
          * Option for setting task icon.
          */
         ICON("icon"),
@@ -630,7 +778,7 @@ public class ImportManager
         /**
          * Option for setting task timeout.
          */
-        TIMEOUT("timeout"),
+        COOL_DOWN("cool-down"),
         /**
          * Option for setting task start date.
          */
@@ -673,6 +821,19 @@ public class ImportManager
 
 
     /**
+     * Constants for regularity option.
+     */
+    public enum RegularityConstants
+    {
+        NONE,
+        DAILY,
+        WEEKLY,
+        MONTHLY,
+        YEARLY
+    }
+
+
+    /**
      * Enum that holds data type which can be set to each task type.
      */
     public enum TypeConstant
@@ -700,6 +861,10 @@ public class ImportManager
         MATERIALS("materials"),
         POTIONS("potions"),
         WHITELIST("whitelist"),
+        HOUR("hour"),
+        DAY("day"),
+        MONTH("month"),
+        MESSAGE("message"),
         NUMBER("number");
 
 
