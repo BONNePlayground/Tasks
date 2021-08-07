@@ -1,6 +1,7 @@
 package world.bentobox.tasks.configs;
 
 
+import org.bukkit.Material;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TimeZone;
@@ -141,6 +142,50 @@ public class Settings implements ConfigObject
     }
 
 
+    /**
+     * Gets date format.
+     *
+     * @return the date format
+     */
+    public String getDateFormat()
+    {
+        return dateFormat;
+    }
+
+
+    /**
+     * Sets date format.
+     *
+     * @param dateFormat the date format
+     */
+    public void setDateFormat(String dateFormat)
+    {
+        this.dateFormat = dateFormat;
+    }
+
+
+    /**
+     * Gets border block.
+     *
+     * @return the border block
+     */
+    public Material getBorderBlock()
+    {
+        return Material.LIGHT_BLUE_STAINED_GLASS_PANE;
+    }
+
+
+    /**
+     * Gets border block name.
+     *
+     * @return the border block name
+     */
+    public String getBorderBlockName()
+    {
+        return " ";
+    }
+
+
     // ---------------------------------------------------------------------
     // Section: Variables
     // ---------------------------------------------------------------------
@@ -157,6 +202,11 @@ public class Settings implements ConfigObject
     @ConfigComment("By default it is System Timezone.")
     @ConfigEntry(path = "timezone")
     private TimeZone timeZone = TimeZone.getDefault();
+
+    @ConfigComment("Stores the date format used from template importing.")
+    @ConfigComment("Date format for importing.")
+    @ConfigEntry(path = "date-format")
+    private String dateFormat = "YYYY-MM-dd";
 
     @ConfigComment("")
     @ConfigComment("This list stores GameModes in which QuestsAddon should not work.")
