@@ -254,7 +254,23 @@ public class Constants
      */
     public static final String TASK = "[task]";
 
+    /**
+     * Reference string to date parameter in translations.
+     */
     public static final String DATE = "[date]";
 
+    /**
+     * Reference string to cool down parameter in translations.
+     */
     public static final String COOL_DOWN = "[cool_down]";
+
+    /**
+     * Reference string to availability parameter in translations.
+     */
+    public static final String AVAILABLE = "[available]";
+
+    /**
+     * Reference string to count parameter in translations.
+     */
+    public static final String COUNT = "[count]";
 }
