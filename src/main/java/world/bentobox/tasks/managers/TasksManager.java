@@ -571,7 +571,7 @@ public class TasksManager
         if (!this.validateTask(taskObject, User.getInstance(player), islandData))
         {
             this.sendMessage(User.getInstance(player),
-                "Cannot start the task.",
+                Constants.ERRORS + "cannot-start",
                 User.getInstance(player),
                 taskObject.getName());
             return;
@@ -674,6 +674,11 @@ public class TasksManager
         // Save island data.
         islandData.stopTask(taskId);
         this.saveTaskData(islandData);
+
+        this.sendMessage(User.getInstance(player),
+            Constants.MESSAGES + "task-stopped",
+            User.getInstance(player),
+            taskObject.getName());
     }
 
 
@@ -1208,8 +1213,8 @@ public class TasksManager
         if (receiver != null && receiver.isOnline())
         {
             Utils.sendMessage(receiver, receiver.getTranslation(message,
-                "[player]", sender.getName(),
-                "[task]", taskName));
+                Constants.PLAYER, sender.getName(),
+                Constants.TASK, taskName));
         }
     }
 

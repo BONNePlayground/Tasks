@@ -1,6 +1,152 @@
 tasks:
-  title: "Tasks Addon"
-
+  commands:
+    admin:
+      main:
+        description: "Tasks addon admin command"
+      import:
+        description: "Imports tasks"
+        confirmation: "This will remove existing tasks from [gamemode] and import new tasks from the template file - please confirm"
+    player:
+      main:
+        description: "opens tasks selection GUI"
+  gui:
+    titles:
+      main-player-panel: "&0&l Tasks Panel"
+      tasks_panel: "&0&l General Tasks"
+      daily_panel: "&0&l Daily Tasks"
+      weekly_panel: "&0&l Weekly Tasks"
+      monthly_panel: "&0&l Monthly Tasks"
+      yearly_panel: "&0&l Yearly Tasks"
+    buttons:
+      # Buttons in main player gui that allows to select generic task filters.
+      tasks:
+        name: "&f&l General Tasks"
+        description: |-
+          &7 List of general tasks
+          &7 for player to complete.
+          |
+          &7 [available] from [count]
+      daily:
+        name: "&f&l Daily Tasks"
+        description: |-
+          &7 List of daily tasks
+          &7 for player to complete.
+          |
+          &7 [available] from [count]
+      weekly:
+        name: "&f&l Weekly Tasks"
+        description: |-
+          &7 List of weekly tasks
+          &7 for player to complete.
+          |
+          &7 [available] from [count]
+      monthly:
+        name: "&f&l Monthly Tasks"
+        description: |-
+          &7 List of monthly tasks
+          &7 for player to complete.
+          |
+          &7 [available] from [count]
+      yearly:
+        name: "&f&l Yearly Tasks"
+        description: |-
+          &7 List of yearly tasks
+          &7 for player to complete.
+          |
+          &7 [available] from [count]
+      # Button that is used to return to previous GUI or exit it completely.
+      return:
+        name: "&f&l Return"
+        description: |-
+          &7 Return to previous menu
+          &7 or exit GUI
+      # Button that is used in multi-page GUIs which allows to return to previous page.
+      previous:
+        name: "&f&l Previous Page"
+        description: |-
+          &7 Switch to [number] page
+      # Button that is used in multi-page GUIs which allows to go to next page.
+      next:
+        name: "&f&l Next Page"
+        description: |-
+          &7 Switch to [number] page
+    descriptions: ""
+    tips:
+      click-to-previous: "&e Click &7 to view previous page."
+      click-to-next: "&e Click &7 to view next page."
+      click-to-return: "&e Click &7 to return."
+      click-to-quit: "&e Click &7 to exit."
+      click-to-view: "&e Click &7 to view."
+      click-to-activate: "&e Click &7 to activate."
+      click-to-deactivate: "&e Click &7 to deactivate."
   messages:
-    bundle-loaded: "Bundle with id [bundle] is loaded"
-    task-loaded: "Task with id [task] is loaded"
+    # Message that appears after importing a file.
+    import-count: "&e Imported [task] new generators and [bundle] new bundles."
+    # Message that appears after loading task.
+    task-loaded: "&e Task object [task] loaded."
+    # Message that appears after loading task.
+    bundle-loaded: "&e Task bundle [bundle] loaded."
+    # Message that appears after stopping the task.
+    task-stopped: "&e Task [task] stopped."
+    # Message that appears after trying to activate too many tasks at once.
+    too-many-active-tasks: "&c Too many active tasks already. You can only activate [number] tasks at once."
+    # Message that appears when trying to activate already active task.
+    task-already-active: "&c This task is already active."
+    # Message that appears when trying to activate task that is not started yet.
+    task-not-started-yet: "&c This task has not started yet. It will be available at [date]."
+    # Message that appears when trying to activate task that is already ended.
+    task-already-finished: "&c This task ended at [date]. You cannot start it."
+    # Message that appears when trying to activate task but you already reached max repetition count.
+    max-completion-count-reached: "&c You have reached max completion count for this task."
+    # Message that appears when trying to activate task in cool down time.
+    cooldown: "&c This task has [cool_down] seconds cool down. You need to wait [number] seconds more."
+    # Message that appears when trying to activate task but you do not have enough experience.
+    not-enough-experience: "&c This task requires [value] experience for activating."
+    # Message that appears when trying to activate task but you do not have enough island level.
+    not-enough-level: "&c This task requires [value] island level for activating."
+    # Message that appears when trying to activate task but you do not have enough money.
+    not-enough-money: "&c This task requires [value] money for activating."
+    # Message that appears when trying to activate task but you do not have required permission.
+    missing-permission: "&c This task requires [value] permission for activating."
+    # Message that appears when trying to activate task but you do not have required task.
+    missing-task: "&c This task requires completed [value] task for activating."
+  errors:
+    # Error message that are sent to player after clicking on GUI for task filter button that does not contain tasks.
+    no-tasks-in-world: "&c No tasks with this type in [world]"
+    # Error message that is displayed when trying to load file that does not exists.
+    no-file: "&c `[file]` file not found. Cannot perform importing."
+    # Error message that is displayed when loading file lead to a crash.
+    no-load: "&c Could not load `[file]` file. Error while reading: [description]."
+    # Error message that is displayed when trying to import generators in non-gamemode-world.
+    not-a-gamemode-world: "&c World '[world]' is not a Game Mode Addon world."
+    # Error message that appears when user tries to start a task that is not valid.
+    cannot-start: "&c Cannot start [task]."
+  conversations:
+    # Prefix for messages that are send from server.
+    prefix: "&l&6 [BentoBox]: &r"
+
+
+  # Showcase for manual material translation
+  materials:
+    # Names should be lowercase.
+    cobblestone: "Cobblestone"
+    # Also supports descriptions.
+    stone:
+      name: "Stone"
+      description: ""
+  # Showcase for manual entity translation
+  entities:
+    # Names should be lowercase.
+    zombie: "Zombie"
+    # Also supports descriptions.
+    cow:
+      name: "Cow"
+      description: ""
+  # Showcase for manual biome translation
+  biomes:
+    # Names should be lowercase.
+    plains: "Plains"
+    # Also supports descriptions.
+    flower_forest:
+      name: "Flower Forest"
+      description: ""

@@ -184,6 +184,7 @@ public class ImportManager
         final String prefix = gameMode.getDescription().getName().toLowerCase() + "_";
 
         int numberOfTasks = 0;
+        int numberOfBundles = 0;
 
         ConfigurationSection reader = config.getConfigurationSection(GeneralConstant.TASKS.getValue());
 
@@ -221,10 +222,11 @@ public class ImportManager
         {
             Utils.sendMessage(user,
                 user.getTranslation(Constants.MESSAGES + "import-count",
-                    Constants.TASK, String.valueOf(numberOfTasks)));
+                    Constants.TASK, String.valueOf(numberOfTasks),
+                    Constants.BUNDLE, String.valueOf(numberOfBundles)));
         }
 
-        this.addon.log("Imported " + numberOfTasks + " tasks");
+        this.addon.log("Imported " + numberOfTasks + " tasks and " + numberOfBundles + " bundles");
     }
 
 

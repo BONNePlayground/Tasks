@@ -6,6 +6,7 @@ import java.util.List;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.tasks.TasksAddon;
+import world.bentobox.tasks.panels.player.MainPlayerPanel;
 import world.bentobox.tasks.utils.Constants;
 
 
@@ -63,7 +64,7 @@ public class PlayerCommand extends CompositeCommand
     @Override
     public boolean execute(User user, String label, List<String> args)
     {
-        this.showHelp(this, user);
+        MainPlayerPanel.openPanel(this.getAddon(), this.getWorld(), user);
         return true;
     }
 }
