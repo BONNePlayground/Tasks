@@ -12,19 +12,34 @@ tasks:
       # Description in lore message
       description: |-
         &7 Create a new Island
+      start-message:
+        type: TEAM
+        message: |-
+          &7 Starting a new task.
+      finish-message:
+        type: BROADCAST
+        message: |-
+          &7 Finishing this task.
       # Icon used in GUI's
       icon: "GRASS_BLOCK:1"
-
-      # Indicates that task is repeatable
-      repeatable: true
-      # Defines timeout in seconds before player can complete task next time
-      timeout: 10000
-      # Defines start date for task.
-      start-date: 08.07.2021
+      # Defines start date for task. Format YYYY-MM-DD
+      start-date: 08-07-2021
       # Defines end date for task.
-      end-date: 08.07.2021
-      # Defines if task is D, W, M, Y
-      repeater: 1D
+      end-date: 09-07-2021
+
+      # Allows defining number of repeats.
+      # Setting it to 1 means that it is not repeatable.
+      repeatable: 1
+      # Defines timeout in seconds before player can complete task next time
+      # This option can be set, but does not make sense in non-repeatable tasks.
+      cool-down: 100
+      # Automatic reset for the task.
+      regularity:
+        # Type: NONE / DAILY / WEEKLY / MONTHLY / YEARLY
+        type: DAILY
+        hour: 0
+        # day: 1
+        # month: 1
 
     # Valid Task Types
     data:
@@ -48,14 +63,23 @@ tasks:
 
     # Rewards
     rewards:
-      # Player Experience
-      experience: 10
-      # Money Reward
-      money: 1.5
-      # Items Reward
-      items:
-        #TODO:
-        stone:1
-      commands: []
+      team:
+        # Player Experience
+        experience: 10
+        # Money Reward
+        money: 1.5
+        # Items Reward
+        items:
+          - stone:1
+        commands: []
+      player:
+        # Player Experience
+        experience: 10
+        # Money Reward
+        money: 1.5
+        # Items Reward
+        items:
+          - stone:1
+        commands: [ ]
 
 
