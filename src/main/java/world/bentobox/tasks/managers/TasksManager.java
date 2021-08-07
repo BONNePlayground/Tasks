@@ -656,6 +656,28 @@ public class TasksManager
 
 
     /**
+     * This method triggers task stopping without completing. It will erse the progress.
+     * @param taskId TaskId that must be stopped.
+     * @param player Player who stopped the task.
+     * @param islandData Island Data object.
+     */
+    public void onTaskStop(String taskId, Player player, TaskDataObject islandData)
+    {
+        TaskObject taskObject = this.taskCache.get(taskId);
+
+        if (taskObject == null)
+        {
+            // Hmm... weird.
+            return;
+        }
+
+        // Save island data.
+        islandData.stopTask(taskId);
+        this.saveTaskData(islandData);
+    }
+
+
+    /**
      * This method process task finishing.
      * @param taskId Task ID that is finished.
      * @param player Player who finished the task.

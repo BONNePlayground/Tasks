@@ -135,6 +135,26 @@ public class TaskDataObject implements DataObject
 
 
     /**
+     * This method stops the current task.
+     * @param taskId task id that must be stopped.
+     */
+    public void stopTask(String taskId)
+    {
+        TaskInternalData taskInternalData =
+            this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
+
+        if (!this.activeTasks.remove(taskId))
+        {
+            // task is already active.
+            return;
+        }
+
+        // Set current progress as 0.
+        taskInternalData.setCurrentTaskProgress(0);
+    }
+
+
+    /**
      * Increase progress of the task.
      *
      * @param taskId the task id
