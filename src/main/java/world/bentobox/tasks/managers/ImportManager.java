@@ -33,7 +33,10 @@ import world.bentobox.bentobox.util.ItemParser;
 import world.bentobox.tasks.TasksAddon;
 import world.bentobox.tasks.database.objects.TaskObject;
 import world.bentobox.tasks.database.objects.options.*;
+import world.bentobox.tasks.database.objects.requirements.LevelRequirement;
+import world.bentobox.tasks.database.objects.requirements.MoneyRequirement;
 import world.bentobox.tasks.database.objects.requirements.PermissionRequirement;
+import world.bentobox.tasks.database.objects.requirements.TaskRequirement;
 import world.bentobox.tasks.database.objects.rewards.ExperienceReward;
 import world.bentobox.tasks.listeners.tasks.*;
 import world.bentobox.tasks.utils.Constants;
@@ -631,6 +634,7 @@ public class ImportManager
     {
         if (section != null)
         {
+            // Populate permissions
             if (section.contains(RequirementConstant.PERMISSIONS.getValue()))
             {
                 if (section.isList(RequirementConstant.PERMISSIONS.getValue()))
@@ -653,6 +657,52 @@ public class ImportManager
                     {
                         PermissionRequirement requirement = new PermissionRequirement();
                         requirement.setPermission(permission);
+                        // Add to taskObject
+                        taskObject.addRequirement(requirement);
+                    }
+                }
+            }
+
+            // Populate money
+            if (section.contains(RequirementConstant.MONEY.getValue()))
+            {
+                MoneyRequirement requirement = new MoneyRequirement();
+                requirement.setMoney(section.getDouble(RequirementConstant.MONEY.getValue(), 0.0));
+                taskObject.addRequirement(requirement);
+            }
+
+            // Populate level
+            if (section.contains(RequirementConstant.LEVEL.getValue()))
+            {
+                LevelRequirement requirement = new LevelRequirement();
+                requirement.setLevel(section.getDouble(RequirementConstant.LEVEL.getValue(), 0.0));
+                taskObject.addRequirement(requirement);
+            }
+
+            // Populate tasks
+            if (section.contains(RequirementConstant.TASKS.getValue()))
+            {
+                // TODO: it is possible that taskId requires adding [gamemode]_
+                if (section.isList(RequirementConstant.TASKS.getValue()))
+                {
+                    section.getStringList(RequirementConstant.TASKS.getValue()).
+                        forEach(taskId -> {
+                            TaskRequirement requirement = new TaskRequirement();
+                            requirement.setTaskId(taskId);
+                            // Add to taskObject
+                            taskObject.addRequirement(requirement);
+                        });
+
+
+                }
+                else if (section.isString(RequirementConstant.TASKS.getValue()))
+                {
+                    String taskId = section.getString(RequirementConstant.TASKS.getValue());
+
+                    if (taskId != null)
+                    {
+                        TaskRequirement requirement = new TaskRequirement();
+                        requirement.setTaskId(taskId);
                         // Add to taskObject
                         taskObject.addRequirement(requirement);
                     }
