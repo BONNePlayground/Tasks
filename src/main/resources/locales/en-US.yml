@@ -76,9 +76,19 @@ tasks:
       click-to-next: "&e Click &7 to view next page."
       click-to-return: "&e Click &7 to return."
       click-to-quit: "&e Click &7 to exit."
+      # tooltips for user action gui.
       click-to-view: "&e Click &7 to view."
       click-to-activate: "&e Click &7 to activate."
       click-to-deactivate: "&e Click &7 to deactivate."
+      left-click-to-view: "&e Left Click &7 to view."
+      left-click-to-activate: "&e Left Click &7 to activate."
+      left-click-to-deactivate: "&e Left Click &7 to deactivate."
+      right-click-to-view: "&e Right Click &7 to view."
+      right-click-to-activate: "&e Right Click &7 to activate."
+      right-click-to-deactivate: "&e Right Click &7 to deactivate."
+      shift-click-to-view: "&e Shift Click &7 to view."
+      shift-click-to-activate: "&e Shift Click &7 to activate."
+      shift-click-to-deactivate: "&e Shift Click &7 to deactivate."
   messages:
     # Message that appears after importing a file.
     import-count: "&e Imported [task] new generators and [bundle] new bundles."

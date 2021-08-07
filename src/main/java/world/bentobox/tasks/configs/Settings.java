@@ -165,13 +165,46 @@ public class Settings implements ConfigObject
 
 
     /**
+     * Is show filters boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isShowFilters()
+    {
+        return showFilters;
+    }
+
+
+    /**
+     * Sets show filters.
+     *
+     * @param showFilters the show filters
+     */
+    public void setShowFilters(boolean showFilters)
+    {
+        this.showFilters = showFilters;
+    }
+
+
+    /**
      * Gets border block.
      *
      * @return the border block
      */
     public Material getBorderBlock()
     {
-        return Material.LIGHT_BLUE_STAINED_GLASS_PANE;
+        return borderBlock;
+    }
+
+
+    /**
+     * Sets border block.
+     *
+     * @param borderBlock the border block
+     */
+    public void setBorderBlock(Material borderBlock)
+    {
+        this.borderBlock = borderBlock;
     }
 
 
@@ -182,13 +215,132 @@ public class Settings implements ConfigObject
      */
     public String getBorderBlockName()
     {
-        return " ";
+        return borderBlockName;
     }
 
 
-    // ---------------------------------------------------------------------
-    // Section: Variables
-    // ---------------------------------------------------------------------
+    /**
+     * Sets border block name.
+     *
+     * @param borderBlockName the border block name
+     */
+    public void setBorderBlockName(String borderBlockName)
+    {
+        this.borderBlockName = borderBlockName;
+    }
+
+
+    /**
+     * Gets click action.
+     *
+     * @return the click action
+     */
+    public GuiAction getClickAction()
+    {
+        return clickAction;
+    }
+
+
+    /**
+     * Sets click action.
+     *
+     * @param clickAction the click action
+     */
+    public void setClickAction(GuiAction clickAction)
+    {
+        this.clickAction = clickAction;
+    }
+
+
+    /**
+     * Gets left click action.
+     *
+     * @return the left click action
+     */
+    public GuiAction getLeftClickAction()
+    {
+        return leftClickAction;
+    }
+
+
+    /**
+     * Sets left click action.
+     *
+     * @param leftClickAction the left click action
+     */
+    public void setLeftClickAction(GuiAction leftClickAction)
+    {
+        this.leftClickAction = leftClickAction;
+    }
+
+
+    /**
+     * Gets right click action.
+     *
+     * @return the right click action
+     */
+    public GuiAction getRightClickAction()
+    {
+        return rightClickAction;
+    }
+
+
+    /**
+     * Sets right click action.
+     *
+     * @param rightClickAction the right click action
+     */
+    public void setRightClickAction(GuiAction rightClickAction)
+    {
+        this.rightClickAction = rightClickAction;
+    }
+
+
+    /**
+     * Gets shift click action.
+     *
+     * @return the shift click action
+     */
+    public GuiAction getShiftClickAction()
+    {
+        return shiftClickAction;
+    }
+
+
+    /**
+     * Sets shift click action.
+     *
+     * @param shiftClickAction the shift click action
+     */
+    public void setShiftClickAction(GuiAction shiftClickAction)
+    {
+        this.shiftClickAction = shiftClickAction;
+    }
+
+
+// ---------------------------------------------------------------------
+// Section: Variables
+// ---------------------------------------------------------------------
+
+
+    /**
+     * This enum holds options for choosing on click setting.
+     */
+    public enum GuiAction
+    {
+        /**
+         * Opens detailed menu GUI.
+         */
+        VIEW,
+        /**
+         * Tries to activate/deactivate task
+         */
+        TOGGLE,
+        /**
+         * No action is done.
+         */
+        NONE
+    }
 
 
     @ConfigComment("Default number of active tasks that can be done at once.")
@@ -215,6 +367,53 @@ public class Settings implements ConfigObject
     @ConfigComment(" - BSkyBlock")
     @ConfigEntry(path = "disabled-gamemodes")
     private Set<String> disabledGameModes = new HashSet<>();
+
+    @ConfigComment("This allows to toggle if filters in Tasks User Panel should be showed.")
+    @ConfigEntry(path = "gui.show-filters")
+    private boolean showFilters = true;
+
+    @ConfigComment("This allows to change main border block in player panel.")
+    @ConfigEntry(path = "gui.border-block")
+    private Material borderBlock = Material.MAGENTA_STAINED_GLASS_PANE;
+
+    @ConfigComment("This allows to change border block display name.")
+    @ConfigEntry(path = "gui.border-block-name")
+    private String borderBlockName = " ";
+
+    @ConfigComment("Allows to change what action will be performed when user clicks on task.")
+    @ConfigComment("NOTE!! This action will overwrite left-click and right-click actions.")
+    @ConfigComment("Supported values:")
+    @ConfigComment("- TOGGLE - tries to activate/deactivate task.")
+    @ConfigComment("- VIEW - opens detailed view for task.")
+    @ConfigComment("- NONE - no actions are performed.")
+    @ConfigEntry(path = "gui.actions.click-action")
+    private GuiAction clickAction = GuiAction.NONE;
+
+    @ConfigComment("Allows to change what action will be performed when user left clicks on task.")
+    @ConfigComment("NOTE!! This action will be overwritten by click-action.")
+    @ConfigComment("Supported values:")
+    @ConfigComment("- TOGGLE - tries to activate/deactivate task.")
+    @ConfigComment("- VIEW - opens detailed view for task.")
+    @ConfigComment("- NONE - no actions are performed.")
+    @ConfigEntry(path = "gui.actions.left-click-action")
+    private GuiAction leftClickAction = GuiAction.TOGGLE;
+
+    @ConfigComment("Allows to change what action will be performed when user right clicks on task.")
+    @ConfigComment("NOTE!! This action will be overwritten by click-action.")
+    @ConfigComment("Supported values:")
+    @ConfigComment("- TOGGLE - tries to activate/deactivate task.")
+    @ConfigComment("- VIEW - opens detailed view for task.")
+    @ConfigComment("- NONE - no actions are performed.")
+    @ConfigEntry(path = "gui.actions.right-click-action")
+    private GuiAction rightClickAction = GuiAction.VIEW;
+
+    @ConfigComment("Allows to change what action will be performed when user shift-clicks on task.")
+    @ConfigComment("Supported values:")
+    @ConfigComment("- TOGGLE - tries to activate/deactivate task.")
+    @ConfigComment("- VIEW - opens detailed view for task.")
+    @ConfigComment("- NONE - no actions are performed.")
+    @ConfigEntry(path = "gui.actions.shift-click-action")
+    private GuiAction shiftClickAction = GuiAction.NONE;
 
     @ConfigComment("Player main sub-command to access the addon.")
     @ConfigComment("This command label will be required to write after gamemode admin command label, f.e. /[label] tasks")

@@ -76,7 +76,7 @@ public abstract class CommonPanel
     protected List<String> generateTaskDescription(TaskObject task,
         boolean isActive,
         boolean isUnlocked,
-        long islandLevel)
+        double islandLevel)
     {
         return Collections.emptyList();
     }

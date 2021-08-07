@@ -9,6 +9,8 @@ package world.bentobox.tasks.database.objects;
 
 import com.google.gson.annotations.Expose;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 import world.bentobox.bentobox.database.objects.DataObject;
@@ -231,6 +233,20 @@ public class TaskObject implements DataObject
             findFirst();
 
         return repeatable.isPresent() && repeatable.get().isRepeatable();
+    }
+
+
+    /**
+     * @return Icon of the task object or paper.
+     */
+    public ItemStack getIcon()
+    {
+        Optional<IconOption> repeatable = this.getOptionList().stream().
+            filter(option -> Option.OptionType.ICON.equals(option.getType())).
+            map(option -> (IconOption) option).
+            findFirst();
+
+        return repeatable.map(IconOption::getIcon).orElse(new ItemStack(Material.PAPER));
     }
 
 

@@ -1064,7 +1064,7 @@ public class TasksManager
      * @param islandUUID island UUID.
      * @return island level.
      */
-    private double getIslandLevel(String islandUUID)
+    public double getIslandLevel(String islandUUID)
     {
         if (!this.addon.hasLevelHook())
         {

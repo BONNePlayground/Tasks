@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
+import world.bentobox.tasks.configs.Settings;
 import world.bentobox.tasks.database.objects.TaskDataObject;
 import world.bentobox.tasks.database.objects.TaskObject;
 import world.bentobox.tasks.database.objects.options.Option;
@@ -388,18 +389,49 @@ public class TasksPlayerPanel extends CommonPanel
     private PanelItem createTaskButton(TaskObject taskObject)
     {
         final boolean activeTask = this.islandData.getActiveTasks().contains(taskObject.getUniqueId());
+        final boolean unlocked = this.availableTasks.contains(taskObject);
+
+        List<String> description = this.generateTaskDescription(taskObject,
+            activeTask,
+            unlocked,
+            this.manager.getIslandLevel(this.islandData.getUniqueId()));
 
         return new PanelItemBuilder().
             name(taskObject.getName()).
-            icon(Material.PAPER).
+            icon(taskObject.getIcon()).
+            description(description).
             clickHandler((panel, user1, clickType, slot) -> {
-                if (activeTask)
+
+                // Click handler should work only if user has a permission to change anything.
+                // Otherwise just to view.
+
+                if (clickType.isShiftClick())
                 {
-                    this.manager.onTaskStop(taskObject.getUniqueId(), this.user.getPlayer(), this.islandData);
+                    this.processClick(this.addon.getSettings().getShiftClickAction(),
+                        activeTask,
+                        unlocked,
+                        taskObject);
+                }
+                else if (this.addon.getSettings().getClickAction() != Settings.GuiAction.NONE)
+                {
+                    this.processClick(this.addon.getSettings().getClickAction(),
+                        activeTask,
+                        unlocked,
+                        taskObject);
+                }
+                else if (clickType.isRightClick())
+                {
+                    this.processClick(this.addon.getSettings().getRightClickAction(),
+                        activeTask,
+                        unlocked,
+                        taskObject);
                 }
                 else
                 {
-                    this.manager.onTaskStart(taskObject.getUniqueId(), this.user.getPlayer(), this.islandData);
+                    this.processClick(this.addon.getSettings().getLeftClickAction(),
+                        activeTask,
+                        unlocked,
+                        taskObject);
                 }
 
                 return true;
@@ -422,9 +454,124 @@ public class TasksPlayerPanel extends CommonPanel
     protected List<String> generateTaskDescription(TaskObject task,
         boolean isActive,
         boolean isUnlocked,
-        long islandLevel)
+        double islandLevel)
     {
-        return super.generateTaskDescription(task, isActive, isUnlocked, islandLevel);
+        List<String> description =
+            super.generateTaskDescription(task, isActive, isUnlocked, islandLevel);
+
+        description.add("");
+
+        if (this.addon.getSettings().getClickAction() != Settings.GuiAction.NONE)
+        {
+            description.addAll(
+                this.generateToolTips(this.addon.getSettings().getClickAction(),
+                    Constants.TIPS,
+                    isUnlocked,
+                    isActive));
+        }
+        else
+        {
+            // Add left click tooltip
+            description.addAll(
+                this.generateToolTips(this.addon.getSettings().getLeftClickAction(),
+                    Constants.TIPS + "left-",
+                    isUnlocked,
+                    isActive));
+
+            // Add right click tooltip
+            description.addAll(
+                this.generateToolTips(this.addon.getSettings().getRightClickAction(),
+                    Constants.TIPS + "right-",
+                    isUnlocked,
+                    isActive));
+        }
+
+        // Add shift click tooltip.
+        description.addAll(
+            this.generateToolTips(this.addon.getSettings().getShiftClickAction(),
+                Constants.TIPS + "shift-",
+                isUnlocked,
+                isActive));
+
+        return description;
+    }
+
+
+    /**
+     * This method generated tool tips based on given parameters for given action.
+     *
+     * @param action Action that is performed.
+     * @param reference Reference to translation string.
+     * @param isUnlocked Boolean that indicate if generator is unlocked.
+     * @param isActive Boolean that indicate if generator is active.
+     * @return List of string that contains tool tips.
+     */
+    private List<String> generateToolTips(Settings.GuiAction action,
+        String reference,
+        boolean isUnlocked,
+        boolean isActive)
+    {
+        List<String> description = new ArrayList<>(3);
+
+        switch (action)
+        {
+            case VIEW -> description.add(this.user.getTranslation(reference + "click-to-view"));
+            case TOGGLE -> {
+                if (isUnlocked)
+                {
+                    if (isActive)
+                    {
+                        description.add(this.user.getTranslation(reference + "click-to-deactivate"));
+                    }
+                    else
+                    {
+                        description.add(this.user.getTranslation(reference + "click-to-activate"));
+                    }
+                }
+            }
+        }
+
+        return description;
+    }
+
+
+    /**
+     * This method process given click action.
+     *
+     * @param action Action that must be performed
+     * @param isActive Indicates if task is active.
+     * @param isUnlocked Indicates if task is unlocked.
+     * @param taskObject Task Object that will be targeted.
+     */
+    private void processClick(Settings.GuiAction action,
+        boolean isActive,
+        boolean isUnlocked,
+        TaskObject taskObject)
+    {
+        switch (action)
+        {
+            case VIEW -> {
+                // Open view panel.
+                //TaskViewPanel.openPanel(this, taskObject);
+            }
+            case TOGGLE -> {
+                if (isUnlocked)
+                {
+                    if (isActive)
+                    {
+                        this.manager.onTaskStop(taskObject.getUniqueId(), user.getPlayer(), this.islandData);
+                        // Rebuild whole gui.
+                        this.build();
+                    }
+                    else if (this.manager.validateTask(taskObject, user, this.islandData))
+                    {
+                        this.manager.onTaskStart(taskObject.getUniqueId(), user.getPlayer(), this.islandData);
+                        // Build whole gui.
+                        this.build();
+                    }
+                }
+            }
+        }
     }
 
 
