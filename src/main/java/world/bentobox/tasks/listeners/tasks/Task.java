@@ -53,6 +53,13 @@ public abstract class Task
     public abstract void onStop();
 
 
+    /**
+     * This method returns target amount that must be reached for this task.
+     * @return Double that represents target amount for task to finish.
+     */
+    public abstract double getTargetAmount();
+
+
 // ---------------------------------------------------------------------
 // Section: Getters and setters
 // ---------------------------------------------------------------------

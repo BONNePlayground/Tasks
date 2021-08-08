@@ -181,6 +181,16 @@ public class BlockTask extends Task implements Listener
     }
 
 
+    /**
+     * @return block count.
+     */
+    @Override
+    public double getTargetAmount()
+    {
+        return this.blockCount;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Getters and Setters
 // ---------------------------------------------------------------------

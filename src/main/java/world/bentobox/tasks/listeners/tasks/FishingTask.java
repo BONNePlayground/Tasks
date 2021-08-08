@@ -205,6 +205,16 @@ public class FishingTask extends Task implements Listener
     }
 
 
+    /**
+     * @return item count.
+     */
+    @Override
+    public double getTargetAmount()
+    {
+        return this.itemCount;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------

@@ -125,6 +125,16 @@ public class EntityBreedTask extends Task implements Listener
     }
 
 
+    /**
+     * @return entity count.
+     */
+    @Override
+    public double getTargetAmount()
+    {
+        return this.entityCount;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Getters and Setters
 // ---------------------------------------------------------------------

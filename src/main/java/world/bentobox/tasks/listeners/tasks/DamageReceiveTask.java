@@ -115,6 +115,16 @@ public class DamageReceiveTask extends Task implements Listener
     }
 
 
+    /**
+     * @return damage amount.
+     */
+    @Override
+    public double getTargetAmount()
+    {
+        return this.damageAmount;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Getters and Setters
 // ---------------------------------------------------------------------

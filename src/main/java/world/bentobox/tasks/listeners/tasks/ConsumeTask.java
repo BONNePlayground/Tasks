@@ -155,6 +155,16 @@ public class ConsumeTask extends Task implements Listener
     }
 
 
+    /**
+     * @return item count.
+     */
+    @Override
+    public double getTargetAmount()
+    {
+        return this.itemCount;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Getters and Setters
 // ---------------------------------------------------------------------
