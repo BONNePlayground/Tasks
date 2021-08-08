@@ -212,7 +212,7 @@ public class TasksManager
         if (withTaskStop)
         {
             // Now stop all active tasks.
-            this.taskCache.values().stream().map(TaskObject::getTask).forEach(Task::onStop);
+            this.taskCache.values().stream().map(TaskObject::getTask).forEach(task -> ((Task) task).onStop());
         }
     }
 
@@ -543,6 +543,19 @@ public class TasksManager
     {
         this.taskDataCache.remove(uniqueId);
         this.taskDataDatabase.deleteID(uniqueId);
+    }
+
+
+    /**
+     * Gets task by id.
+     *
+     * @param taskId the task id
+     * @return the task by id
+     */
+    @Nullable
+    public TaskObject getTaskById(String taskId)
+    {
+        return this.taskCache.get(taskId);
     }
 
 
