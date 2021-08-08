@@ -12,12 +12,13 @@ import com.google.gson.annotations.Expose;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import world.bentobox.bentobox.database.objects.DataObject;
 import world.bentobox.bentobox.database.objects.Table;
 import world.bentobox.tasks.TasksAddon;
 import world.bentobox.tasks.database.objects.options.*;
-import world.bentobox.tasks.database.objects.requirements.Requirement;
+import world.bentobox.tasks.database.objects.requirements.*;
 import world.bentobox.tasks.database.objects.rewards.Reward;
 import world.bentobox.tasks.listeners.tasks.Task;
 
@@ -118,6 +119,11 @@ public class TaskObject implements DataObject
     {
         this.rewardList.remove(reward);
     }
+
+
+// ---------------------------------------------------------------------
+// Section: Access methods
+// ---------------------------------------------------------------------
 
 
     /**
@@ -241,12 +247,88 @@ public class TaskObject implements DataObject
      */
     public ItemStack getIcon()
     {
-        Optional<IconOption> repeatable = this.getOptionList().stream().
+        return this.getOptionList().stream().
             filter(option -> Option.OptionType.ICON.equals(option.getType())).
             map(option -> (IconOption) option).
-            findFirst();
+            findFirst().
+            map(IconOption::getIcon).
+            orElseGet(() -> new ItemStack(Material.PAPER));
+    }
 
-        return repeatable.map(IconOption::getIcon).orElse(new ItemStack(Material.PAPER));
+
+    /**
+     * @return Description of the task object or empty list.
+     */
+    public List<String> getDescription()
+    {
+        return this.getOptionList().stream().
+            filter(option -> Option.OptionType.DESCRIPTION.equals(option.getType())).
+            map(option -> (DescriptionOption) option).
+            findFirst().
+            map(DescriptionOption::getDescription).
+            orElseGet(Collections::emptyList);
+    }
+
+
+    /**
+     * Gets required permissions.
+     *
+     * @return the required permissions
+     */
+    public List<String> getRequiredPermissions()
+    {
+        return this.getRequirementList().stream().
+            filter(requirement -> Requirement.RequirementType.PERMISSION.equals(requirement.getType())).
+            map(option -> (PermissionRequirement) option).
+            map(PermissionRequirement::getPermission).
+            collect(Collectors.toList());
+    }
+
+
+    /**
+     * Gets required tasks.
+     *
+     * @return the required tasks
+     */
+    public List<String> getRequiredTasks()
+    {
+        return this.getRequirementList().stream().
+            filter(requirement -> Requirement.RequirementType.TASK.equals(requirement.getType())).
+            map(option -> (TaskRequirement) option).
+            map(TaskRequirement::getTaskId).
+            collect(Collectors.toList());
+    }
+
+
+    /**
+     * Gets required level.
+     *
+     * @return the required level
+     */
+    public double getRequiredLevel()
+    {
+        return this.getRequirementList().stream().
+            filter(requirement -> Requirement.RequirementType.LEVEL.equals(requirement.getType())).
+            map(option -> (LevelRequirement) option).
+            map(LevelRequirement::getLevel).
+            findFirst().
+            orElse(0.0);
+    }
+
+
+    /**
+     * Gets required money.
+     *
+     * @return the required money
+     */
+    public double getRequiredMoney()
+    {
+        return this.getRequirementList().stream().
+            filter(requirement -> Requirement.RequirementType.MONEY.equals(requirement.getType())).
+            map(option -> (MoneyRequirement) option).
+            map(MoneyRequirement::getMoney).
+            findFirst().
+            orElse(0.0);
     }
 
 
