@@ -273,4 +273,67 @@ public class Constants
      * Reference string to count parameter in translations.
      */
     public static final String COUNT = "[count]";
+
+    /**
+     * Reference string to rewards parameter in translations.
+     */
+    public static final String REWARDS = "[rewards]";
+
+    /**
+     * Reference string to requirements parameter in translations.
+     */
+    public static final String REQUIREMENTS = "[requirements]";
+
+    /**
+     * Reference string to status parameter in translations.
+     */
+    public static final String STATUS = "[status]";
+
+    /**
+     * Reference string to level parameter in translations.
+     */
+    public static final String LEVEL = "[level]";
+
+    /**
+     * Reference string to money parameter in translations.
+     */
+    public static final String MONEY = "[money]";
+
+    /**
+     * Reference string to money parameter in translations.
+     */
+    public static final String MISSING_TASKS = "[missing-tasks]";
+
+    /**
+     * Reference string to money parameter in translations.
+     */
+    public static final String MISSING_PERMISSIONS = "[missing-permissions]";
+
+    public static final String ACTIVE = "[active]";
+
+    public static final String ENABLED = "[enabled]";
+
+    public static final String START_DATE = "[start-date]";
+
+    public static final String END_DATE = "[end-date]";
+
+    public static final String COMPLETION = "[completion]";
+
+    public static final String PROGRESS = "[progress]";
+
+    public static final String DISABLED = "[disabled]";
+
+    public static final String ITEMS = "[items]";
+
+    public static final String COMMAND = "[commands]";
+
+    public static final String EXPERIENCE = "[experience]";
+
+    public static final String TEAM = "[team]";
+
+    public static final String BLOCKS = "[blocks]";
+
+    public static final String ITEM = "[item]";
+
+    public static final String ENTITY = "[entity]";
 }

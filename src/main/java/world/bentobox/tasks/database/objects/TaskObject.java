@@ -384,9 +384,9 @@ public class TaskObject implements DataObject
      *
      * @return the task
      */
-    public Task getTask()
+    public <T extends Task> T getTask()
     {
-        return task;
+        return (T) task;
     }
 
 

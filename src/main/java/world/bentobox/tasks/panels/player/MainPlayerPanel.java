@@ -117,17 +117,17 @@ public class MainPlayerPanel extends CommonPanel
             case TASKS -> {
                 available = this.availableTasks.stream().
                     filter(task -> task.getOptionList().stream().noneMatch(
-                        option -> !Option.OptionType.DAILY_RESET.equals(option.getType()) &&
-                            !Option.OptionType.WEEKLY_RESET.equals(option.getType()) &&
-                            !Option.OptionType.MONTHLY_RESET.equals(option.getType()) &&
-                            !Option.OptionType.YEARLY_RESET.equals(option.getType()))).
+                        option -> Option.OptionType.DAILY_RESET.equals(option.getType()) ||
+                            Option.OptionType.WEEKLY_RESET.equals(option.getType()) ||
+                            Option.OptionType.MONTHLY_RESET.equals(option.getType()) ||
+                            Option.OptionType.YEARLY_RESET.equals(option.getType()))).
                     count();
                 count = this.allTasks.stream().
                     filter(task -> task.getOptionList().stream().noneMatch(
-                        option -> !Option.OptionType.DAILY_RESET.equals(option.getType()) &&
-                            !Option.OptionType.WEEKLY_RESET.equals(option.getType()) &&
-                            !Option.OptionType.MONTHLY_RESET.equals(option.getType()) &&
-                            !Option.OptionType.YEARLY_RESET.equals(option.getType()))).
+                        option -> Option.OptionType.DAILY_RESET.equals(option.getType()) ||
+                            Option.OptionType.WEEKLY_RESET.equals(option.getType()) ||
+                            Option.OptionType.MONTHLY_RESET.equals(option.getType()) ||
+                            Option.OptionType.YEARLY_RESET.equals(option.getType()))).
                     count();
             }
             case DAILY -> {

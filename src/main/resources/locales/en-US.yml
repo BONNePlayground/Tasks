@@ -24,35 +24,35 @@ tasks:
         description: |-
           &7 List of general tasks
           &7 for player to complete.
-          |
+
           &7 [available] from [count]
       daily:
         name: "&f&l Daily Tasks"
         description: |-
           &7 List of daily tasks
           &7 for player to complete.
-          |
+
           &7 [available] from [count]
       weekly:
         name: "&f&l Weekly Tasks"
         description: |-
           &7 List of weekly tasks
           &7 for player to complete.
-          |
+
           &7 [available] from [count]
       monthly:
         name: "&f&l Monthly Tasks"
         description: |-
           &7 List of monthly tasks
           &7 for player to complete.
-          |
+
           &7 [available] from [count]
       yearly:
         name: "&f&l Yearly Tasks"
         description: |-
           &7 List of yearly tasks
           &7 for player to complete.
-          |
+
           &7 [available] from [count]
       # Button that is used to return to previous GUI or exit it completely.
       return:
@@ -70,7 +70,135 @@ tasks:
         name: "&f&l Next Page"
         description: |-
           &7 Switch to [number] page
-    descriptions: ""
+    descriptions:
+      # Task lore message generator. All elements in task lore is generated
+      # based on section below.
+      task:
+        # Main lore element content. If you do not want to display requirements at all,
+        # just remove them from [requirements] section.
+        # [description] comes from each task object.
+        # Lore does not support colour codes. Each object separate supports.
+        lore: |-
+          [description]
+          [type]
+          [requirements]
+          [rewards]
+          [status]
+        # Requirements lore generation
+        requirements:
+          description: |-
+            [level]
+            [money]
+            [missing-permissions]
+            [missing-tasks]
+          # Generates [level] message.
+          level: "&c&l Required Level: &r&c [number]"
+          # Generates [money] message.
+          money: "&c&l Required Money: &r&c [number]"
+          # Generates [missing-permission] message title.
+          permission-title: "&c&l Missing Permissions:"
+          # Generates [missing-permission] message values.
+          permission: "&c  -[permission]"
+          # Generates [missing-tasks] message title.
+          tasks-title: "&c&l Missing Tasks:"
+          # Generates [missing-tasks] message values.
+          tasks: "&c  -[task]"
+        status:
+          description: |-
+            [disabled]
+            [start-date]
+            [end-date]
+            [completion]
+            [progress]
+            [active]
+          completed: "&2&l Task completed"
+          completed-repeatable: "&2&l Task completed: &r&2 [number] of [value] times"
+          completed-repeatable-infinite: "&2&l Task completed: &r&2 [number] times"
+          # Message that is showed for Active generators.
+          active: "&2 Active"
+          # Message that is showing progress for active task.
+          progress: "&2&l Progress: &r&2 [number] of [value]"
+          start-date: "&2&l Start date: &r&2 [date]"
+          end-date: "&2&l End date: &r&2 [date]"
+          disabled: "&c&l Task is disabled"
+        rewards:
+          description: |-
+            [player]
+            [team]
+          player-rewards: "&2&l Player Rewards:"
+          team-rewards: "&2&l Team Rewards:"
+          lore: |-
+            [items]
+            [experience]
+            [money]
+            [commands]
+          command-title: "&f&l Reward Commands:"
+          command: "&f  -[value]"
+          item-title: "&f&l Reward Items:"
+          item: "&f  -[value]"
+          experience: "&f&l Experience: &r&f [value]"
+          money: "&f&l Money: &r&f [value]"
+        type:
+          block-break:
+            title-any: "&f&l Break any [number] blocks"
+            whitelist-title: "&f&l Break [number] blocks from:"
+            whitelist-block: "&f  -[material]"
+            whitelist-title-one: "&f&l Break [number] [material] blocks"
+            blacklist-title: "&f&l Break any [number] blocks except:"
+            blacklist-title-one: "&f&l Break any [number] blocks except &c [material]"
+            blacklist-block: "&c  -[material]"
+          block-place:
+            title-any: "&f&l Place any [number] blocks"
+            whitelist-title: "&f&l Place [number] blocks from:"
+            whitelist-block: "&f  -[material]"
+            whitelist-title-one: "&f&l Place [number] [material] blocks"
+            blacklist-title: "&f&l Place any [number] blocks except:"
+            blacklist-title-one: "&f&l Place any [number] blocks except &c [material]"
+            blacklist-block: "&c  -[material]"
+          consume:
+            title-any: "&f&l Consume any [number] of items"
+            whitelist-title: "&f&l Consume [number] items from:"
+            whitelist-item: "&f  -[item]"
+            whitelist-title-one: "&f&l Consume [number] [item]"
+            blacklist-title: "&f&l Consume any [number] of items except:"
+            blacklist-title-one: "&f&l Consume any [number] items except &c [item]"
+            blacklist-item: "&c  -[item]"
+          damage-deal:
+            title: "&f&l Deal [number] damage"
+          damage-receive:
+            title: "&f&l Receive [number] damage"
+          breed:
+            title-any: "&f&l Breed any [number] entities"
+            whitelist-title: "&f&l Breed [number] entities from:"
+            whitelist-entity: "&f  -[entity]"
+            whitelist-title-one: "&f&l Breed [number] [entity]s"
+            blacklist-title: "&f&l Breed any [number] entities except:"
+            blacklist-title-one: "&f&l Breed any [number] entities except &c [entity]"
+            blacklist-entity: "&c  -[entity]"
+          kill:
+            title-any: "&f&l Kill any [number] entities"
+            whitelist-title: "&f&l Kill [number] entities from:"
+            whitelist-entity: "&f  -[entity]"
+            whitelist-title-one: "&f&l Kill [number] [entity]s"
+            blacklist-title: "&f&l Kill any [number] entities except:"
+            blacklist-title-one: "&f&l Kill any [number] entities except &c [entity]"
+            blacklist-entity: "&c  -[entity]"
+          fishing:
+            title-any: "&f&l Fish any [number] items"
+            whitelist-title: "&f&l Fish [number] items from:"
+            whitelist-item: "&f  -[item]"
+            whitelist-title-one: "&f&l Fish [number] [item]s"
+            blacklist-title: "&f&l Fish any [number] items except:"
+            blacklist-title-one: "&f&l Fish any [number] items except &c [item]"
+            blacklist-item: "&c  -[item]"
+          tactical-fishing:
+            title-any: "&f&l Catch in a bucket any [number] entities"
+            whitelist-title: "&f&l Catch in a bucket [number] entities from:"
+            whitelist-entity: "&f  -[entity]"
+            whitelist-title-one: "&f&l Catch in a bucket [number] [entity]s"
+            blacklist-title: "&f&l Catch in a bucket any [number] entities except:"
+            blacklist-title-one: "&f&l Catch in a bucket any [number] entities except &c [entity]"
+            blacklist-entity: "&c  -[entity]"
     tips:
       click-to-previous: "&e Click &7 to view previous page."
       click-to-next: "&e Click &7 to view next page."

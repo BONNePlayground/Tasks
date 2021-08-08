@@ -391,10 +391,7 @@ public class TasksPlayerPanel extends CommonPanel
         final boolean activeTask = this.islandData.getActiveTasks().contains(taskObject.getUniqueId());
         final boolean unlocked = this.availableTasks.contains(taskObject);
 
-        List<String> description = this.generateTaskDescription(taskObject,
-            activeTask,
-            unlocked,
-            this.manager.getIslandLevel(this.islandData.getUniqueId()));
+        List<String> description = this.generateTaskDescription(taskObject, activeTask, unlocked);
 
         return new PanelItemBuilder().
             name(taskObject.getName()).
@@ -447,17 +444,16 @@ public class TasksPlayerPanel extends CommonPanel
      * @param task Task which description must be generated.
      * @param isActive Boolean that indicates if task is active.
      * @param isUnlocked Boolean that indicates if task is unlocked.
-     * @param islandLevel Long that shows island level.
      * @return List of strings that describes task tier.
      */
-    @Override
     protected List<String> generateTaskDescription(TaskObject task,
         boolean isActive,
-        boolean isUnlocked,
-        double islandLevel)
+        boolean isUnlocked)
     {
-        List<String> description =
-            super.generateTaskDescription(task, isActive, isUnlocked, islandLevel);
+        List<String> description = super.generateTaskDescription(task,
+            isActive,
+            isUnlocked,
+            this.islandData);
 
         description.add("");
 
