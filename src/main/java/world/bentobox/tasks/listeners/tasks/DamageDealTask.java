@@ -148,6 +148,17 @@ public class DamageDealTask extends Task implements Listener
     }
 
 
+    /**
+     * Returns type of the task.
+     * @return Task Type.
+     */
+    @Override
+    public Type getType()
+    {
+        return Type.DAMAGE_DEAL;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Getters and Setters
 // ---------------------------------------------------------------------

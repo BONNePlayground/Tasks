@@ -60,6 +60,13 @@ public abstract class Task
     public abstract double getTargetAmount();
 
 
+    /**
+     * Returns type of the task.
+     * @return Task Type.
+     */
+    public abstract Type getType();
+
+
 // ---------------------------------------------------------------------
 // Section: Getters and setters
 // ---------------------------------------------------------------------
@@ -90,6 +97,23 @@ public abstract class Task
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
+
+
+    /**
+     * Stores all types of tasks.
+     */
+    public enum Type
+    {
+        BLOCK,
+        CONSUME,
+        DAMAGE_DEAL,
+        DAMAGE_RECEIVE,
+        BREED,
+        KILL,
+        FISHING,
+        TACTICAL_FISHING
+    }
+
 
     /**
      * Owner TaskId Object.

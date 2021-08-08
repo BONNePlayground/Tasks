@@ -135,6 +135,17 @@ public class EntityBreedTask extends Task implements Listener
     }
 
 
+    /**
+     * Returns type of the task.
+     * @return Task Type.
+     */
+    @Override
+    public Type getType()
+    {
+        return Type.BREED;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Getters and Setters
 // ---------------------------------------------------------------------

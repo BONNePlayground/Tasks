@@ -125,6 +125,17 @@ public class DamageReceiveTask extends Task implements Listener
     }
 
 
+    /**
+     * Returns type of the task.
+     * @return Task Type.
+     */
+    @Override
+    public Type getType()
+    {
+        return Type.DAMAGE_RECEIVE;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Getters and Setters
 // ---------------------------------------------------------------------

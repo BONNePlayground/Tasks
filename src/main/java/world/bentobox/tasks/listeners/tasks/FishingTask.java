@@ -215,6 +215,17 @@ public class FishingTask extends Task implements Listener
     }
 
 
+    /**
+     * Returns type of the task.
+     * @return Task Type.
+     */
+    @Override
+    public Type getType()
+    {
+        return Type.FISHING;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
