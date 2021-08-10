@@ -223,11 +223,11 @@ tasks:
     # Message that appears after importing a file.
     import-count: "&e Imported [task] new generators and [bundle] new bundles."
     # Message that appears after loading task.
-    task-loaded: "&e Task object [task] loaded."
+    task-loaded: "&e Task object [task] &r&e loaded."
     # Message that appears after loading task.
-    bundle-loaded: "&e Task bundle [bundle] loaded."
+    bundle-loaded: "&e Task bundle [bundle] &r&e loaded."
     # Message that appears after stopping the task.
-    task-stopped: "&e Task [task] stopped."
+    task-stopped: "&e Task [task] &r&e stopped."
     # Message that appears after trying to activate too many tasks at once.
     too-many-active-tasks: "&c Too many active tasks already. You can only activate [number] tasks at once."
     # Message that appears when trying to activate already active task.
@@ -249,7 +249,7 @@ tasks:
     # Message that appears when trying to activate task but you do not have required permission.
     missing-permission: "&c This task requires [value] permission for activating."
     # Message that appears when trying to activate task but you do not have required task.
-    missing-task: "&c This task requires completed [value] task for activating."
+    missing-task: "&c This task requires completed [value] &r&c task for activating."
   errors:
     # Error message that are sent to player after clicking on GUI for task filter button that does not contain tasks.
     no-tasks-in-world: "&c No tasks with this type in [world]"
@@ -260,7 +260,7 @@ tasks:
     # Error message that is displayed when trying to import generators in non-gamemode-world.
     not-a-gamemode-world: "&c World '[world]' is not a Game Mode Addon world."
     # Error message that appears when user tries to start a task that is not valid.
-    cannot-start: "&c Cannot start [task]."
+    cannot-start: "&c Cannot start [task] &r&c ."
   conversations:
     # Prefix for messages that are send from server.
     prefix: "&l&6 [BentoBox]: &r"
