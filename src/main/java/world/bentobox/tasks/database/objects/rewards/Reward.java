@@ -38,14 +38,6 @@ public interface Reward
     enum RewardType
     {
         /**
-         * Type constant for command reward.
-         */
-        COMMAND,
-        /**
-         * Type constant for experience reward.
-         */
-        EXPERIENCE,
-        /**
          * Type constant for item reward.
          */
         ITEM,
@@ -53,6 +45,14 @@ public interface Reward
          * Type constant for money reward.
          */
         MONEY,
+        /**
+         * Type constant for experience reward.
+         */
+        EXPERIENCE,
+        /**
+         * Type constant for command reward.
+         */
+        COMMAND,
         /**
          * Type constant for unknown reward.
          */

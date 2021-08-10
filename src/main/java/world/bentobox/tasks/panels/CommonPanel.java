@@ -545,7 +545,8 @@ public abstract class CommonPanel
         StringBuilder rewardExperience = new StringBuilder();
         StringBuilder rewardMoney = new StringBuilder();
 
-        taskObject.getRewardList().stream().filter(reward -> !reward.isTeamPrize()).sorted().
+        taskObject.getRewardList().stream().filter(reward -> !reward.isTeamPrize()).
+            sorted(Comparator.comparing(Reward::getType)).
             forEachOrdered(reward -> {
                 switch (reward.getType())
                 {
@@ -575,7 +576,8 @@ public abstract class CommonPanel
         StringBuilder teamRewardExperience = new StringBuilder();
         StringBuilder teamRewardMoney = new StringBuilder();
 
-        taskObject.getRewardList().stream().filter(Reward::isTeamPrize).sorted().
+        taskObject.getRewardList().stream().filter(Reward::isTeamPrize).
+            sorted(Comparator.comparing(Reward::getType)).
             forEachOrdered(reward -> {
                 switch (reward.getType())
                 {
