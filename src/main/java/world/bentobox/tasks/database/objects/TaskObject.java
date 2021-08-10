@@ -408,7 +408,7 @@ public class TaskObject implements DataObject
      */
     public List<Option> getOptionList()
     {
-        return optionList;
+        return Objects.requireNonNullElse(this.optionList, Collections.emptyList());
     }
 
 
@@ -430,7 +430,7 @@ public class TaskObject implements DataObject
      */
     public List<Requirement> getRequirementList()
     {
-        return requirementList;
+        return Objects.requireNonNullElse(this.requirementList, Collections.emptyList());
     }
 
 
@@ -452,7 +452,7 @@ public class TaskObject implements DataObject
      */
     public List<Reward> getRewardList()
     {
-        return rewardList;
+        return Objects.requireNonNullElse(this.rewardList, Collections.emptyList());
     }
 
 
@@ -521,19 +521,19 @@ public class TaskObject implements DataObject
      * Task options for customization.
      */
     @Expose
-    private List<Option> optionList = Collections.emptyList();
+    private List<Option> optionList;
 
     /**
      * Task requirements that must be fulfilled
      */
     @Expose
-    private List<Requirement> requirementList = Collections.emptyList();
+    private List<Requirement> requirementList;
 
     /**
      * Task rewards that must be given out.
      */
     @Expose
-    private List<Reward> rewardList = Collections.emptyList();
+    private List<Reward> rewardList;
 
     /**
      * Option to disable/enable task for users.

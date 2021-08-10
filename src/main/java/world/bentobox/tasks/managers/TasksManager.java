@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
@@ -276,17 +277,63 @@ public class TasksManager
 
 
     /**
+     * This method returns accessible tasks for the given islandData.
+     * @param world World where tasks must be searched.
+     * @param islandData IslandData that contains some info.
+     * @return List of tasks objects that are accessible for user.
+     */
+    public List<TaskObject> getAccessibleTaskList(World world, @Nullable TaskDataObject islandData)
+    {
+        // Optimization could be done by generating bundles for each situation, but currently I do not
+        // think it should be an actual problem here.
+
+        Stream<TaskObject> taskObjectList = this.getAllTasks(world).stream().filter(TaskObject::isEnabled);
+
+        if (islandData != null)
+        {
+            // Owner bundle has larger priority then island bundle.
+            if (islandData.getOwnerBundle() != null &&
+                this.taskBundleCache.containsKey(islandData.getOwnerBundle()))
+            {
+                TaskBundleObject bundle = this.taskBundleCache.get(islandData.getOwnerBundle());
+
+                return taskObjectList.
+                    filter(taskObject -> bundle.getTaskSet().contains(taskObject.getUniqueId())).
+                    collect(Collectors.toList());
+            }
+            else if (islandData.getIslandBundle() != null &&
+                this.taskBundleCache.containsKey(islandData.getIslandBundle()))
+            {
+                TaskBundleObject bundle = this.taskBundleCache.get(islandData.getIslandBundle());
+
+                return taskObjectList.
+                    filter(taskObject -> bundle.getTaskSet().contains(taskObject.getUniqueId())).
+                    collect(Collectors.toList());
+            }
+            else
+            {
+                return taskObjectList.collect(Collectors.toList());
+            }
+        }
+        else
+        {
+            return taskObjectList.collect(Collectors.toList());
+        }
+    }
+
+
+    /**
      * This method returns available tasks for the given islandData.
      * @param world World where tasks must be searched.
      * @param islandData IslandData that contains some info.
      * @return List of tasks objects that are available for user.
      */
-    public List<TaskObject> getAvailableTaskList(World world, @Nullable TaskDataObject islandData)
+    public List<TaskObject> getAvailableTaskList(World world, @NotNull User user, @Nullable TaskDataObject islandData)
     {
         // Optimization could be done by generating bundles for each situation, but currently I do not
         // think it should be an actual problem here.
 
-        Stream<TaskObject> taskObjectList =
+        Stream<TaskObject> taskObjectStream =
             this.getAllTasks(world).stream().
                 filter(TaskObject::isEnabled).
                 filter(TaskObject::isStarted).
@@ -300,27 +347,25 @@ public class TasksManager
             {
                 TaskBundleObject bundle = this.taskBundleCache.get(islandData.getOwnerBundle());
 
-                return taskObjectList.
-                    filter(generatorTier -> bundle.getTaskSet().contains(generatorTier.getUniqueId())).
-                    collect(Collectors.toList());
+                taskObjectStream =
+                    taskObjectStream.filter(taskObject -> bundle.getTaskSet().contains(taskObject.getUniqueId()));
             }
             else if (islandData.getIslandBundle() != null &&
                 this.taskBundleCache.containsKey(islandData.getIslandBundle()))
             {
                 TaskBundleObject bundle = this.taskBundleCache.get(islandData.getIslandBundle());
 
-                return taskObjectList.
-                    filter(generatorTier -> bundle.getTaskSet().contains(generatorTier.getUniqueId())).
-                    collect(Collectors.toList());
+                taskObjectStream =
+                    taskObjectStream.filter(taskObject -> bundle.getTaskSet().contains(taskObject.getUniqueId()));
             }
-            else
-            {
-                return taskObjectList.collect(Collectors.toList());
-            }
+
+            return taskObjectStream.
+                filter(taskObject -> this.canActivateTask(taskObject, user, islandData)).
+                collect(Collectors.toList());
         }
         else
         {
-            return taskObjectList.collect(Collectors.toList());
+            return taskObjectStream.collect(Collectors.toList());
         }
     }
 
@@ -804,6 +849,82 @@ public class TasksManager
                             taskObject.getName());
                 }
             });
+    }
+
+
+    /**
+     * This method returns if given task is valid for starting.
+     * @param taskObject Task Object that must be checked.
+     * @param islandData Island data that contains tasks.
+     * @return {@code true} if task is valid for starting, {@code false} otherwise.
+     */
+    public boolean canActivateTask(TaskObject taskObject, User user, TaskDataObject islandData)
+    {
+        if (!taskObject.isStarted() || taskObject.isFinished())
+        {
+            // Task is not started by date or Task is already closed by date.
+            return false;
+        }
+
+        // Check tasks with data in it.
+        if (islandData.getTaskStatus().containsKey(taskObject.getUniqueId()))
+        {
+            this.processResetTask(taskObject, user, islandData);
+
+            boolean completed = islandData.isTaskCompleted(taskObject.getUniqueId());
+            long numberOfCompletion = islandData.getNumberOfCompletions(taskObject.getUniqueId());
+
+            if (completed && !taskObject.isRepeatable() || taskObject.getRepeats() <= numberOfCompletion)
+            {
+                // Task is not repeatable or repeat count is reached.
+                return false;
+            }
+
+            long coolDown = taskObject.getCoolDown();
+
+            if (coolDown > 0)
+            {
+                long lastCompletionTime = islandData.getLastCompletionTime(taskObject.getUniqueId());
+
+                if (new Date().getTime() < lastCompletionTime + coolDown)
+                {
+                    // Cooldown time is not passed.
+                    return false;
+                }
+            }
+        }
+
+        // Check task requirements
+        return taskObject.getRequirementList().stream().noneMatch(requirement ->
+        {
+            switch (requirement.getType())
+            {
+                case EXPERIENCE -> {
+                    // Check user experience
+                    return user.getPlayer().getTotalExperience() < 0;
+                }
+                case LEVEL -> {
+                    // Check if user island has large enough level.
+                    return this.getIslandLevel(islandData.getUniqueId()) < ((LevelRequirement) requirement).getLevel();
+                }
+                case MONEY -> {
+                    // Check if user has enough balance.
+                    return this.getBalance(user) < ((MoneyRequirement) requirement).getMoney();
+                }
+                case PERMISSION -> {
+                    // Check is user has required permission.
+                    return !user.hasPermission(((PermissionRequirement) requirement).getPermission());
+                }
+                case TASK -> {
+                    // Check if task is not completed yet.
+                    return !islandData.isTaskCompleted(((TaskRequirement) requirement).getTaskId());
+                }
+                default -> {
+                    // Default behaviour
+                    return false;
+                }
+            }
+        });
     }
 
 

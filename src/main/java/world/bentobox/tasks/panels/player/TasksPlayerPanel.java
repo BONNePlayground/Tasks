@@ -46,14 +46,14 @@ public class TasksPlayerPanel extends CommonPanel
         switch (type)
         {
             case TASKS_PANEL -> {
-                this.allTasks = this.manager.getAllTasks(this.world).stream().
+                this.allTasks = this.manager.getAccessibleTaskList(world, this.islandData).stream().
                     filter(task -> task.getOptionList().stream().noneMatch(
                         option -> Option.OptionType.DAILY_RESET.equals(option.getType()) ||
                         Option.OptionType.WEEKLY_RESET.equals(option.getType()) ||
                         Option.OptionType.MONTHLY_RESET.equals(option.getType()) ||
                         Option.OptionType.YEARLY_RESET.equals(option.getType()))).
                     toList();
-                this.availableTasks = this.manager.getAvailableTaskList(this.world, this.islandData).stream().
+                this.availableTasks = this.manager.getAvailableTaskList(this.world, this.user, this.islandData).stream().
                     filter(task -> task.getOptionList().stream().noneMatch(
                         option -> Option.OptionType.DAILY_RESET.equals(option.getType()) ||
                             Option.OptionType.WEEKLY_RESET.equals(option.getType()) ||
@@ -62,41 +62,41 @@ public class TasksPlayerPanel extends CommonPanel
                     toList();
             }
             case DAILY_PANEL -> {
-                this.allTasks = this.manager.getAllTasks(this.world).stream().
+                this.allTasks = this.manager.getAccessibleTaskList(world, this.islandData).stream().
                     filter(task -> task.getOptionList().stream().anyMatch(
                         option -> Option.OptionType.DAILY_RESET.equals(option.getType()))).
                     toList();
-                this.availableTasks = this.manager.getAvailableTaskList(this.world, this.islandData).stream().
+                this.availableTasks = this.manager.getAvailableTaskList(this.world, this.user, this.islandData).stream().
                     filter(task -> task.getOptionList().stream().anyMatch(
                         option -> Option.OptionType.DAILY_RESET.equals(option.getType()))).
                     toList();
             }
             case WEEKLY_PANEL -> {
-                this.allTasks = this.manager.getAllTasks(this.world).stream().
+                this.allTasks = this.manager.getAccessibleTaskList(world, this.islandData).stream().
                     filter(task -> task.getOptionList().stream().anyMatch(
                         option -> Option.OptionType.WEEKLY_RESET.equals(option.getType()))).
                     toList();
-                this.availableTasks = this.manager.getAvailableTaskList(this.world, this.islandData).stream().
+                this.availableTasks = this.manager.getAvailableTaskList(this.world, this.user, this.islandData).stream().
                     filter(task -> task.getOptionList().stream().anyMatch(
                         option -> Option.OptionType.WEEKLY_RESET.equals(option.getType()))).
                     toList();
             }
             case MONTHLY_PANEL -> {
-                this.allTasks = this.manager.getAllTasks(this.world).stream().
+                this.allTasks = this.manager.getAccessibleTaskList(world, this.islandData).stream().
                     filter(task -> task.getOptionList().stream().anyMatch(
                         option -> Option.OptionType.MONTHLY_RESET.equals(option.getType()))).
                     toList();
-                this.availableTasks = this.manager.getAvailableTaskList(this.world, this.islandData).stream().
+                this.availableTasks = this.manager.getAvailableTaskList(this.world, this.user, this.islandData).stream().
                     filter(task -> task.getOptionList().stream().anyMatch(
                         option -> Option.OptionType.MONTHLY_RESET.equals(option.getType()))).
                     toList();
             }
             case YEARLY_PANEL -> {
-                this.allTasks = this.manager.getAllTasks(this.world).stream().
+                this.allTasks = this.manager.getAccessibleTaskList(world, this.islandData).stream().
                     filter(task -> task.getOptionList().stream().anyMatch(
                         option -> Option.OptionType.YEARLY_RESET.equals(option.getType()))).
                     toList();
-                this.availableTasks = this.manager.getAvailableTaskList(this.world, this.islandData).stream().
+                this.availableTasks = this.manager.getAvailableTaskList(this.world, this.user, this.islandData).stream().
                     filter(task -> task.getOptionList().stream().anyMatch(
                         option -> Option.OptionType.YEARLY_RESET.equals(option.getType()))).
                     toList();

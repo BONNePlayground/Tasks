@@ -51,8 +51,8 @@ public class MainPlayerPanel extends CommonPanel
         this.islandData = this.manager.validateIslandData(this.island);
 
         // Store tasks in local list to avoid building it every time.
-        this.availableTasks = this.manager.getAvailableTaskList(world, this.islandData);
-        this.allTasks = this.manager.getAllTasks(world);
+        this.availableTasks = this.manager.getAvailableTaskList(world, this.user, this.islandData);
+        this.allTasks = this.manager.getAccessibleTaskList(world, this.islandData);
     }
 
 
