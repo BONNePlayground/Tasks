@@ -1133,6 +1133,12 @@ public class TasksManager
     {
         long lastCompletionTime = islandData.getLastCompletionTime(taskObject.getUniqueId());
 
+        if (lastCompletionTime <= 0)
+        {
+            // Cannot parse task completion here.
+            return;
+        }
+
         // Daily Reset
         Optional<Option> optionalReset = taskObject.getOptionList().stream().
             filter(option -> Option.OptionType.DAILY_RESET.equals(option.getType())).
