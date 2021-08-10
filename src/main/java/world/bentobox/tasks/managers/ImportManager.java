@@ -164,8 +164,7 @@ public class ImportManager
             return false;
         }
 
-        // TODO: wipe or replace exisitng?
-        // this.addon.getAddonManager().wipeTasks(optional);
+        this.addon.getAddonManager().wipeGameModeTasks(optional.get());
         this.createTasks(config, user, optional.get());
 
         return true;

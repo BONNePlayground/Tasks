@@ -245,6 +245,52 @@ public class TasksManager
     }
 
 
+    /**
+     * Wipe game mode tasks and bundles.
+     *
+     * @param gameModeAddon the game mode addon
+     */
+    public void wipeGameModeTasks(GameModeAddon gameModeAddon)
+    {
+        if (!this.operatingWorlds.contains(gameModeAddon.getOverWorld()))
+        {
+            return;
+        }
+
+        final String objectKey = gameModeAddon.getDescription().getName().toLowerCase();
+
+        // Collect all generators
+        List<String> keySet = new ArrayList<>(this.taskCache.keySet());
+
+        // Remove everything that starts with gamemode name.
+        keySet.forEach(uniqueId ->
+        {
+            if (uniqueId.startsWith(objectKey))
+            {
+                this.taskCache.remove(uniqueId);
+                this.taskDatabase.deleteID(uniqueId);
+            }
+        });
+
+        this.addon.log("All tasks for " + objectKey + " are removed!");
+
+        // Collect all bundles
+        keySet = new ArrayList<>(this.taskBundleCache.keySet());
+
+        // Remove everything that starts with gamemode name.
+        keySet.forEach(uniqueId ->
+        {
+            if (uniqueId.startsWith(objectKey))
+            {
+                this.taskBundleCache.remove(uniqueId);
+                this.taskBundleDatabase.deleteID(uniqueId);
+            }
+        });
+
+        this.addon.log("All bundles for " + objectKey + " are removed!");
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: User related data
 // ---------------------------------------------------------------------
