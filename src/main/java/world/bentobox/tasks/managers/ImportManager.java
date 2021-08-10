@@ -453,7 +453,7 @@ public class ImportManager
                     task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
                     task.setBlockCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
                     task.setMaterialSet(this.readMaterials(taskObject,
-                        section.getConfigurationSection(DataConstant.BLOCKS.getValue())));
+                        section.getStringList(DataConstant.BLOCKS.getValue())));
 
                     task.setTaskId(taskObject.getUniqueId());
                     taskObject.setTask(task);
@@ -464,7 +464,7 @@ public class ImportManager
                     task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
                     task.setBlockCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
                     task.setMaterialSet(this.readMaterials(taskObject,
-                        section.getConfigurationSection(DataConstant.BLOCKS.getValue())));
+                        section.getStringList(DataConstant.BLOCKS.getValue())));
 
                     task.setTaskId(taskObject.getUniqueId());
                     taskObject.setTask(task);
@@ -474,9 +474,9 @@ public class ImportManager
                     task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
                     task.setItemCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
                     task.setMaterialSet(this.readMaterials(taskObject,
-                        section.getConfigurationSection(DataConstant.MATERIALS.getValue())));
+                        section.getStringList(DataConstant.MATERIALS.getValue())));
                     task.setPotionEffectTypes(this.readPotions(taskObject,
-                        section.getConfigurationSection(DataConstant.POTIONS.getValue())));
+                        section.getStringList(DataConstant.POTIONS.getValue())));
 
                     task.setTaskId(taskObject.getUniqueId());
                     taskObject.setTask(task);
@@ -500,7 +500,7 @@ public class ImportManager
                     task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
                     task.setEntityCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
                     task.setEntityType(this.readEntities(taskObject,
-                        section.getConfigurationSection(DataConstant.ENTITIES.getValue())));
+                        section.getStringList(DataConstant.ENTITIES.getValue())));
 
                     task.setTaskId(taskObject.getUniqueId());
                     taskObject.setTask(task);
@@ -510,7 +510,7 @@ public class ImportManager
                     task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
                     task.setEntityCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
                     task.setEntityType(this.readEntities(taskObject,
-                        section.getConfigurationSection(DataConstant.ENTITIES.getValue())));
+                        section.getStringList(DataConstant.ENTITIES.getValue())));
 
                     task.setTaskId(taskObject.getUniqueId());
                     taskObject.setTask(task);
@@ -520,7 +520,7 @@ public class ImportManager
                     task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
                     task.setItemCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
                     task.setItemSet(this.readMaterials(taskObject,
-                        section.getConfigurationSection(DataConstant.MATERIALS.getValue())));
+                        section.getStringList(DataConstant.MATERIALS.getValue())));
 
                     task.setTaskId(taskObject.getUniqueId());
                     taskObject.setTask(task);
@@ -530,7 +530,7 @@ public class ImportManager
                     task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
                     task.setEntityCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
                     task.setEntityType(this.readEntities(taskObject,
-                        section.getConfigurationSection(DataConstant.ENTITIES.getValue())));
+                        section.getStringList(DataConstant.ENTITIES.getValue())));
 
                     task.setTaskId(taskObject.getUniqueId());
                     taskObject.setTask(task);
@@ -546,13 +546,13 @@ public class ImportManager
      * @param section Section that contains materials.
      * @return Set of materials from config section.
      */
-    private Set<Material> readMaterials(TaskObject object, ConfigurationSection section)
+    private Set<Material> readMaterials(TaskObject object, List<String> section)
     {
         Set<Material> materialSet = new HashSet<>();
 
         if (section != null)
         {
-            for (String materialKey : section.getKeys(false))
+            for (String materialKey : section)
             {
                 try
                 {
@@ -577,13 +577,13 @@ public class ImportManager
      * @param section Section that contains entities.
      * @return Set of entities from config section.
      */
-    private Set<EntityType> readEntities(TaskObject object, ConfigurationSection section)
+    private Set<EntityType> readEntities(TaskObject object, List<String> section)
     {
         Set<EntityType> entitySet = new HashSet<>();
 
         if (section != null)
         {
-            for (String entityKey : section.getKeys(false))
+            for (String entityKey : section)
             {
                 try
                 {
@@ -608,13 +608,13 @@ public class ImportManager
      * @param section Section that contains potions.
      * @return Set of potions from config section.
      */
-    private Set<PotionEffectType> readPotions(TaskObject object, ConfigurationSection section)
+    private Set<PotionEffectType> readPotions(TaskObject object, List<String> section)
     {
         Set<PotionEffectType> potionSet = new HashSet<>();
 
         if (section != null)
         {
-            for (String potionKey : section.getKeys(false))
+            for (String potionKey : section)
             {
                 try
                 {

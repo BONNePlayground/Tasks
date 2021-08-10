@@ -43,12 +43,19 @@ tasks:
 
     # Valid Task Types
     data:
+      # BLOCK_BREAK, BLOCK_PLACE, CONSUME, DAMAGE_DEAL, DAMAGE_RECEIVE,  ENTITY_BREED,  ENTITY_KILL, FISHING, TACTICAL_FISHING
       type: BLOCK_BREAK
-      # List of blocks for the filter
+      # List of blocks for the filter | valid for block_break and block_place tasks.
       blocks:
         - STONE
         - COBBLESTONE
         - GRANITE
+      # List of entities for the filter | valid for ENTITY_BREED and ENTITY_KILL and TACTICAL_FISHING tasks.
+      entities: []
+      # List of items for the filter | valid for CONSUME and FISHING tasks.
+      materials: []
+      # List of items for the filter | valid for CONSUME tasks.
+      potions: []
       # Indicates if blocks are whitelisted or blacklisted.
       whitelist: true
       # Indicates the amount of blocks that must be reached.
