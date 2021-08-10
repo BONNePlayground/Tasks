@@ -1,7 +1,10 @@
 package world.bentobox.tasks.configs;
 
 
+import com.google.gson.annotations.JsonAdapter;
 import org.bukkit.Material;
+import org.bukkit.configuration.serialization.DelegateDeserialization;
+import org.bukkit.configuration.serialization.SerializableAs;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TimeZone;
@@ -10,6 +13,8 @@ import world.bentobox.bentobox.api.configuration.ConfigComment;
 import world.bentobox.bentobox.api.configuration.ConfigEntry;
 import world.bentobox.bentobox.api.configuration.ConfigObject;
 import world.bentobox.bentobox.api.configuration.StoreAt;
+import world.bentobox.bentobox.database.objects.adapters.Adapter;
+import world.bentobox.tasks.database.adapters.TimeZoneAdapter;
 
 
 /**
@@ -353,6 +358,7 @@ public class Settings implements ConfigObject
     @ConfigComment("Stores the TimeZone for the all date calculations.")
     @ConfigComment("By default it is System Timezone.")
     @ConfigEntry(path = "timezone")
+    @Adapter(TimeZoneAdapter.class)
     private TimeZone timeZone = TimeZone.getDefault();
 
     @ConfigComment("Stores the date format used from template importing.")

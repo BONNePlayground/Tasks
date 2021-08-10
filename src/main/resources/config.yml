@@ -1,8 +1,68 @@
-# Config file for Tasks add-on Version ${version}
-
-# Disabled Game Mode Addons
-# Tasks Addon will not work in these game modes
+# Tasks Addon Configuration {$version}
+# This config file is dynamic and saved when the server is shutdown.
+#
+# Default number of active tasks that can be done at once.
+# 0 or less will mean that there is no limitation.
+# Can be changed with a permission `[gamemode].tasks.active-tasks.[number]`
+# By default it is 1.
+default-active-tasks: 1
+# Stores the TimeZone for the all date calculations.
+# By default it is System Timezone.
+timezone: Europe/London
+# Stores the date format used from template importing.
+# Date format for importing.
+date-format: YYYY-MM-dd
+#
+# This list stores GameModes in which QuestsAddon should not work.
+# To disable addon it is necessary to write its name in new line that starts with -. Example:
+# disabled-gamemodes:
+#  - BSkyBlock
 disabled-gamemodes: []
-#- SkyGrid
-
-
+gui:
+  # This allows to toggle if filters in Tasks User Panel should be showed.
+  show-filters: true
+  # This allows to change main border block in player panel.
+  border-block: LIGHT_BLUE_STAINED_GLASS_PANE
+  # This allows to change border block display name.
+  border-block-name: ' '
+  actions:
+    # Allows to change what action will be performed when user clicks on task.
+    # NOTE!! This action will overwrite left-click and right-click actions.
+    # Supported values:
+    # - TOGGLE - tries to activate/deactivate task.
+    # - VIEW - opens detailed view for task.
+    # - NONE - no actions are performed.
+    click-action: NONE
+    # Allows to change what action will be performed when user left clicks on task.
+    # NOTE!! This action will be overwritten by click-action.
+    # Supported values:
+    # - TOGGLE - tries to activate/deactivate task.
+    # - VIEW - opens detailed view for task.
+    # - NONE - no actions are performed.
+    left-click-action: TOGGLE
+    # Allows to change what action will be performed when user right clicks on task.
+    # NOTE!! This action will be overwritten by click-action.
+    # Supported values:
+    # - TOGGLE - tries to activate/deactivate task.
+    # - VIEW - opens detailed view for task.
+    # - NONE - no actions are performed.
+    right-click-action: VIEW
+    # Allows to change what action will be performed when user shift-clicks on task.
+    # Supported values:
+    # - TOGGLE - tries to activate/deactivate task.
+    # - VIEW - opens detailed view for task.
+    # - NONE - no actions are performed.
+    shift-click-action: NONE
+commands:
+  player:
+    # Player main sub-command to access the addon.
+    # This command label will be required to write after gamemode admin command label, f.e. /[label] tasks
+    # Each alias must be separated with an empty space.
+    # /!\ In order to apply the changes made to this option, you must restart your server. Reloading BentoBox or the server won't work.
+    main: tasks
+  admin:
+    # Admin main sub-command to access the addon.
+    # This command label will be required to write after gamemode admin command label, f.e. /[label] tasks
+    # Each alias must be separated with an empty space.
+    # /!\ In order to apply the changes made to this option, you must restart your server. Reloading BentoBox or the server won't work.
+    main: tasks
