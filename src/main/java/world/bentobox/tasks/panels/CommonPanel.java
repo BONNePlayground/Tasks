@@ -787,9 +787,18 @@ public abstract class CommonPanel
             double taskProgress = islandData.getTaskProgress(task.getUniqueId());
             double target = task.getTask().getTargetAmount();
 
-            progress =  this.user.getTranslationOrNothing(reference + "progress",
-                Constants.NUMBER, String.valueOf(taskProgress),
-                Constants.VALUE, String.valueOf(target));
+            if ((taskProgress % 1) == 0 && (target % 1) == 0)
+            {
+                progress =  this.user.getTranslationOrNothing(reference + "progress",
+                    Constants.NUMBER, String.valueOf((int) taskProgress),
+                    Constants.VALUE, String.valueOf((int) target));
+            }
+            else
+            {
+                progress =  this.user.getTranslationOrNothing(reference + "progress",
+                    Constants.NUMBER, String.valueOf(taskProgress),
+                    Constants.VALUE, String.valueOf(target));
+            }
         }
         else
         {
