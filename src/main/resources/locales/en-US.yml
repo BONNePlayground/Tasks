@@ -80,7 +80,9 @@ tasks:
         # Lore does not support colour codes. Each object separate supports.
         lore: |-
           [description]
+          |
           [type]
+          |
           [requirements]
           [rewards]
           [status]
