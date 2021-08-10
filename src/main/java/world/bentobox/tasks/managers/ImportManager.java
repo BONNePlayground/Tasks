@@ -196,7 +196,7 @@ public class ImportManager
 
             if (details != null)
             {
-                taskObject.setEnabled(details.getBoolean(GeneralConstant.ENABLED.getValue(), false));
+                taskObject.setEnabled(details.getBoolean(GeneralConstant.ENABLED.getValue(), true));
 
                 // Populate Task options.
                 this.populateOptions(taskObject, details.getConfigurationSection(GeneralConstant.OPTIONS.getValue()));

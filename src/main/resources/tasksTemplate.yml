@@ -6,7 +6,7 @@ tasks:
 
     # Indicates that task is not viewable for players. Mostly for development.
     # By default is disabled.
-    enabled: false
+    enabled: true
 
     options:
       # Description in lore message
