@@ -339,6 +339,7 @@ public class ImportManager
             if (section.contains(OptionConstant.START_DATE.getValue()))
             {
                 DateFormat dateFormat = new SimpleDateFormat(this.addon.getSettings().getDateFormat());
+                dateFormat.setTimeZone(this.addon.getSettings().getTimeZone());
 
                 try
                 {
@@ -356,6 +357,7 @@ public class ImportManager
             if (section.contains(OptionConstant.END_DATE.getValue()))
             {
                 DateFormat dateFormat = new SimpleDateFormat(this.addon.getSettings().getDateFormat());
+                dateFormat.setTimeZone(this.addon.getSettings().getTimeZone());
 
                 try
                 {

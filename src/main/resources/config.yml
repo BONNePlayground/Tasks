@@ -11,7 +11,7 @@ default-active-tasks: 1
 timezone: Europe/London
 # Stores the date format used from template importing.
 # Date format for importing.
-date-format: YYYY-MM-dd
+date-format: yyyy-MM-dd
 #
 # This list stores GameModes in which QuestsAddon should not work.
 # To disable addon it is necessary to write its name in new line that starts with -. Example:

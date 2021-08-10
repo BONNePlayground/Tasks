@@ -23,9 +23,9 @@ tasks:
       # Icon used in GUI's
       icon: "GRASS_BLOCK:1"
       # Defines start date for task. Format YYYY-MM-DD
-      start-date: 2021-07-08
+      start-date: "2021-07-08"
       # Defines end date for task.
-      end-date: 2022-01-01
+      end-date: "2022-01-01"
 
       # Allows defining number of repeats.
       # Setting it to 1 means that it is not repeatable.
