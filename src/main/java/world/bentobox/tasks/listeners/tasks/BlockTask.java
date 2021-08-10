@@ -83,8 +83,9 @@ public class BlockTask extends Task implements Listener
             return;
         }
 
-        if (this.whitelist && !this.getMaterialSet().contains(event.getBlock().getType()) ||
-            !this.whitelist && this.getMaterialSet().contains(event.getBlock().getType()))
+        if (!this.getMaterialSet().isEmpty() &&
+            (this.whitelist && !this.getMaterialSet().contains(event.getBlock().getType()) ||
+                !this.whitelist && this.getMaterialSet().contains(event.getBlock().getType())))
         {
             // Not a whitelisted or is blacklisted material.
             return;
@@ -118,8 +119,9 @@ public class BlockTask extends Task implements Listener
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event)
     {
-        if (this.whitelist && !this.getMaterialSet().contains(event.getBlock().getType()) ||
-            !this.whitelist && this.getMaterialSet().contains(event.getBlock().getType()))
+        if (!this.getMaterialSet().isEmpty() &&
+            (this.whitelist && !this.getMaterialSet().contains(event.getBlock().getType()) ||
+                !this.whitelist && this.getMaterialSet().contains(event.getBlock().getType())))
         {
             // Not a whitelisted or is blacklisted material.
             return;

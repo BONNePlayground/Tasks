@@ -23,7 +23,6 @@ import world.bentobox.tasks.database.objects.rewards.*;
 import world.bentobox.tasks.listeners.tasks.*;
 import world.bentobox.tasks.managers.TasksManager;
 import world.bentobox.tasks.utils.Constants;
-import world.bentobox.tasks.utils.GuiUtils;
 import world.bentobox.tasks.utils.Utils;
 
 
@@ -477,46 +476,46 @@ public abstract class CommonPanel
 
                 if (task.isWhitelist())
                 {
-                    if (task.getEntityTypes().isEmpty())
+                    if (task.getEntityType().isEmpty())
                     {
                         entities.append(this.user.getTranslationOrNothing(localReference + "title-any",
                             Constants.NUMBER, String.valueOf(task.getEntityCount())));
                     }
-                    else if (task.getEntityTypes().size() == 1)
+                    else if (task.getEntityType().size() == 1)
                     {
                         entities.append(this.user.getTranslationOrNothing(localReference + "whitelist-title-one",
                             Constants.NUMBER, String.valueOf(task.getEntityCount()),
-                            Constants.ENTITY, Utils.prettifyObject(this.user, task.getEntityTypes().iterator().next())));
+                            Constants.ENTITY, Utils.prettifyObject(this.user, task.getEntityType().iterator().next())));
                     }
                     else
                     {
                         entities.append(this.user.getTranslationOrNothing(localReference + "whitelist-title",
                             Constants.NUMBER, String.valueOf(task.getEntityCount())));
                         entities.append("\n");
-                        task.getEntityTypes().stream().sorted().forEachOrdered(entity ->
+                        task.getEntityType().stream().sorted().forEachOrdered(entity ->
                             entities.append(this.user.getTranslationOrNothing(localReference + "whitelist-entity",
                                 Constants.ENTITY, Utils.prettifyObject(this.user, entity))).append("\n"));
                     }
                 }
                 else
                 {
-                    if (task.getEntityTypes().isEmpty())
+                    if (task.getEntityType().isEmpty())
                     {
                         entities.append(this.user.getTranslationOrNothing(localReference + "title-any",
                             Constants.NUMBER, String.valueOf(task.getEntityCount())));
                     }
-                    else if (task.getEntityTypes().size() == 1)
+                    else if (task.getEntityType().size() == 1)
                     {
                         entities.append(this.user.getTranslationOrNothing(localReference + "blacklist-title-one",
                             Constants.NUMBER, String.valueOf(task.getEntityCount()),
-                            Constants.ENTITY, Utils.prettifyObject(this.user, task.getEntityTypes().iterator().next())));
+                            Constants.ENTITY, Utils.prettifyObject(this.user, task.getEntityType().iterator().next())));
                     }
                     else
                     {
                         entities.append(this.user.getTranslationOrNothing(localReference + "blacklist-title",
                             Constants.NUMBER, String.valueOf(task.getEntityCount())));
                         entities.append("\n");
-                        task.getEntityTypes().stream().sorted().forEachOrdered(entity ->
+                        task.getEntityType().stream().sorted().forEachOrdered(entity ->
                             entities.append(this.user.getTranslationOrNothing(localReference + "blacklist-entity",
                                 Constants.ENTITY, Utils.prettifyObject(this.user, entity))).append("\n"));
                     }

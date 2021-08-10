@@ -48,7 +48,7 @@ public class TacticalFishingTask extends Task implements Listener
     public TacticalFishingTask(String taskId, Set<EntityType> entityTypes, boolean whitelist, int entityCount)
     {
         super(taskId);
-        this.entityTypes = entityTypes;
+        this.entityType = entityTypes;
         this.whitelist = whitelist;
         this.entityCount = entityCount;
     }
@@ -62,8 +62,9 @@ public class TacticalFishingTask extends Task implements Listener
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onFishing(PlayerBucketEntityEvent event)
     {
-        if (this.whitelist && !this.getEntityTypes().contains(event.getEntity().getType()) ||
-            !this.whitelist && this.getEntityTypes().contains(event.getEntity().getType()))
+        if (!this.getEntityType().isEmpty() && (
+            this.whitelist && !this.getEntityType().contains(event.getEntity().getType()) ||
+                !this.whitelist && this.getEntityType().contains(event.getEntity().getType())))
         {
             // Not a whitelisted or is blacklisted entities.
             return;
@@ -150,20 +151,20 @@ public class TacticalFishingTask extends Task implements Listener
      *
      * @return the item set
      */
-    public Set<EntityType> getEntityTypes()
+    public Set<EntityType> getEntityType()
     {
-        return entityTypes;
+        return entityType;
     }
 
 
     /**
      * Sets item set.
      *
-     * @param entityTypes the item set
+     * @param entityType the item set
      */
-    public void setEntityTypes(Set<EntityType> entityTypes)
+    public void setEntityType(Set<EntityType> entityType)
     {
-        this.entityTypes = entityTypes;
+        this.entityType = entityType;
     }
 
 
@@ -219,7 +220,7 @@ public class TacticalFishingTask extends Task implements Listener
      * Item Set.
      */
     @Expose
-    private Set<EntityType> entityTypes;
+    private Set<EntityType> entityType;
 
     /**
      * White list of blacklist.

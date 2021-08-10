@@ -84,8 +84,9 @@ public class ConsumeTask extends Task implements Listener
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onFishing(PlayerItemConsumeEvent event)
     {
-        if (this.whitelist && !this.getMaterialSet().contains(event.getItem().getType()) ||
-            !this.whitelist && this.getMaterialSet().contains(event.getItem().getType()))
+        if (!this.getMaterialSet().isEmpty() &&
+            (this.whitelist && !this.getMaterialSet().contains(event.getItem().getType()) ||
+                !this.whitelist && this.getMaterialSet().contains(event.getItem().getType())))
         {
             // Not a whitelisted or is blacklisted material.
             return;

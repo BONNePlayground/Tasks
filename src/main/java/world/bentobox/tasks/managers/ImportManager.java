@@ -527,7 +527,7 @@ public class ImportManager
                     TacticalFishingTask task = new TacticalFishingTask();
                     task.setWhitelist(section.getBoolean(DataConstant.WHITELIST.getValue(), true));
                     task.setEntityCount(section.getInt(DataConstant.NUMBER.getValue(), 0));
-                    task.setEntityTypes(this.readEntities(taskObject,
+                    task.setEntityType(this.readEntities(taskObject,
                         section.getConfigurationSection(DataConstant.ENTITIES.getValue())));
 
                     task.setTaskId(taskObject.getUniqueId());

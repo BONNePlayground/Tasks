@@ -77,8 +77,9 @@ public class FishingTask extends Task implements Listener
 
         Material caughtType = ((Item) event.getCaught()).getItemStack().getType();
 
-        if (this.whitelist && !this.getItemSet().contains(caughtType) ||
-            !this.whitelist && this.getItemSet().contains(caughtType))
+        if (!this.getItemSet().isEmpty() &&
+            (this.whitelist && !this.getItemSet().contains(caughtType) ||
+                !this.whitelist && this.getItemSet().contains(caughtType)))
         {
             // Not a whitelisted or is blacklisted entities.
             return;

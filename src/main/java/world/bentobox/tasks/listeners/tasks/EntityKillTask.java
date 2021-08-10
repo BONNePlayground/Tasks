@@ -68,8 +68,9 @@ public class EntityKillTask extends Task implements Listener
             return;
         }
 
-        if (this.whitelist && !this.getEntityType().contains(event.getEntity().getType()) ||
-            !this.whitelist && this.getEntityType().contains(event.getEntity().getType()))
+        if (!this.getEntityType().isEmpty() && (
+            this.whitelist && !this.getEntityType().contains(event.getEntity().getType()) ||
+                !this.whitelist && this.getEntityType().contains(event.getEntity().getType())))
         {
             // Not a whitelisted or is blacklisted entities.
             return;
