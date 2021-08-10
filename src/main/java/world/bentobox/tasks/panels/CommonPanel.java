@@ -10,6 +10,7 @@ package world.bentobox.tasks.panels;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
+import java.text.DateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -756,7 +757,7 @@ public abstract class CommonPanel
             instance.setTime(new Date(startDate));
 
             startDateText = this.user.getTranslationOrNothing(reference + "start-date",
-                Constants.DATE, instance.toString());
+                Constants.DATE, DateFormat.getDateInstance(DateFormat.MEDIUM, user.getLocale()).format(instance.getTime()));
         }
         else
         {
@@ -772,7 +773,7 @@ public abstract class CommonPanel
             instance.setTime(new Date(endDate));
 
             endDateText = this.user.getTranslationOrNothing(reference + "end-date",
-                Constants.DATE, instance.toString());
+                Constants.DATE, DateFormat.getDateInstance(DateFormat.MEDIUM, user.getLocale()).format(instance.getTime()));
         }
         else
         {
