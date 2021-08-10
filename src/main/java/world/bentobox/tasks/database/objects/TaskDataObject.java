@@ -79,7 +79,7 @@ public class TaskDataObject implements DataObject
         TaskInternalData taskInternalData =
             this.taskStatus.computeIfAbsent(taskId, task -> new TaskInternalData());
 
-        return taskInternalData.getCompletionCount() > 0;
+        return taskInternalData.getCurrentCompletionCount() > 0;
     }
 
 
@@ -450,6 +450,7 @@ public class TaskDataObject implements DataObject
             // reset current completion task for rest.
             this.currentCompletionCount = 0;
             this.currentTaskProgress = 0;
+            this.lastCompletionTime = 0;
         }
 
 
