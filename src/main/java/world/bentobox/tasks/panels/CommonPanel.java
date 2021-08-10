@@ -797,19 +797,19 @@ public abstract class CommonPanel
         }
 
         String completion;
-        long completionCount = islandData.getNumberOfAllCompletions(task.getUniqueId());
+        long completionCount = islandData.getNumberOfCompletions(task.getUniqueId());
 
         if (task.isRepeatable() && task.getRepeats() > completionCount)
         {
             if (task.getRepeats() > 0)
             {
-                completion = this.user.getTranslationOrNothing(reference + "completed-repeatable-infinite",
+                completion = this.user.getTranslationOrNothing(reference + "completed-repeatable",
                     Constants.NUMBER, String.valueOf(completionCount),
                     Constants.VALUE, String.valueOf(task.getRepeats()));
             }
             else
             {
-                completion = this.user.getTranslationOrNothing(reference + "completed-repeatable",
+                completion = this.user.getTranslationOrNothing(reference + "completed-repeatable-infinite",
                     Constants.NUMBER, String.valueOf(completionCount));
             }
         }
