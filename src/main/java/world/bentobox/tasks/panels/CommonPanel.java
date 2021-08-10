@@ -563,12 +563,12 @@ public abstract class CommonPanel
 
         if (rewardItems.length() > 0)
         {
-            rewardItems.insert(0, this.user.getTranslationOrNothing(reference + "item-title"));
+            rewardItems.insert(0, this.user.getTranslationOrNothing(reference + "item-title") + "\n");
         }
 
-        if (rewardItems.length() > 0)
+        if (rewardCommands.length() > 0)
         {
-            rewardItems.insert(0, this.user.getTranslationOrNothing(reference + "command-title"));
+            rewardCommands.insert(0, this.user.getTranslationOrNothing(reference + "command-title") + "\n");
         }
 
         StringBuilder teamRewardItems = new StringBuilder();
@@ -594,12 +594,12 @@ public abstract class CommonPanel
 
         if (!teamRewardItems.isEmpty())
         {
-            teamRewardItems.insert(0, this.user.getTranslationOrNothing(reference + "item-title"));
+            teamRewardItems.insert(0, this.user.getTranslationOrNothing(reference + "item-title") + "\n");
         }
 
         if (!teamRewardCommands.isEmpty())
         {
-            teamRewardCommands.insert(0, this.user.getTranslationOrNothing(reference + "command-title"));
+            teamRewardCommands.insert(0, this.user.getTranslationOrNothing(reference + "command-title") + "\n");
         }
 
         String reward = this.user.getTranslationOrNothing(reference + "lore",
