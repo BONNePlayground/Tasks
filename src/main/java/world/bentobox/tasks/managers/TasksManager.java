@@ -706,18 +706,18 @@ public class TasksManager
                     case BROADCAST ->
                         Bukkit.getOnlinePlayers().stream().map(User::getInstance).forEach(user ->
                             this.sendMessage(user,
-                                startMessage.getStartMessage(),
+                                startMessage.getColoredMessage(),
                                 User.getInstance(player),
                                 taskObject.getName()));
                     case TEAM ->
                         island.getMemberSet().stream().map(User::getInstance).forEach(user ->
                             this.sendMessage(user,
-                                startMessage.getStartMessage(),
+                                startMessage.getColoredMessage(),
                                 User.getInstance(player),
                                 taskObject.getName()));
                     case STARTER ->
                         this.sendMessage(User.getInstance(player),
-                            startMessage.getStartMessage(),
+                            startMessage.getColoredMessage(),
                             User.getInstance(player),
                             taskObject.getName());
                 }
@@ -879,18 +879,18 @@ public class TasksManager
                     case BROADCAST ->
                         Bukkit.getOnlinePlayers().stream().map(User::getInstance).forEach(user ->
                             this.sendMessage(user,
-                                finishMessage.getFinishMessage(),
+                                finishMessage.getColoredMessage(),
                                 User.getInstance(player),
                                 taskObject.getName()));
                     case TEAM ->
                         island.getMemberSet().stream().map(User::getInstance).forEach(user ->
                             this.sendMessage(user,
-                                finishMessage.getFinishMessage(),
+                                finishMessage.getColoredMessage(),
                                 User.getInstance(player),
                                 taskObject.getName()));
                     case FINISHER ->
                         this.sendMessage(User.getInstance(player),
-                            finishMessage.getFinishMessage(),
+                            finishMessage.getColoredMessage(),
                             User.getInstance(player),
                             taskObject.getName());
                 }

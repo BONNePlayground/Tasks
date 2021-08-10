@@ -8,6 +8,9 @@ package world.bentobox.tasks.database.objects.options;
 
 
 import com.google.gson.annotations.Expose;
+import org.bukkit.ChatColor;
+
+import world.bentobox.bentobox.util.Util;
 
 
 /**
@@ -66,6 +69,17 @@ public class StartMessageOption implements Option
     public void setMessageType(Type messageType)
     {
         this.messageType = messageType;
+    }
+
+
+    /**
+     * This method returns colored message text.
+     * @return Colored message text.
+     */
+    public String getColoredMessage()
+    {
+        return Util.stripSpaceAfterColorCodes(
+            ChatColor.translateAlternateColorCodes('&', this.getStartMessage()));
     }
 
 
