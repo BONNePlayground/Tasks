@@ -197,6 +197,8 @@ public class ImportManager
             if (details != null)
             {
                 taskObject.setEnabled(details.getBoolean(GeneralConstant.ENABLED.getValue(), true));
+                // Populate task name.
+                taskObject.setName(details.getString(GeneralConstant.NAME.getValue(), taskId));
 
                 // Populate Task options.
                 this.populateOptions(taskObject, details.getConfigurationSection(GeneralConstant.OPTIONS.getValue()));
@@ -871,7 +873,11 @@ public class ImportManager
         /**
          * Option for setting task rewards.
          */
-        REWARDS("rewards");
+        REWARDS("rewards"),
+        /**
+         * Option for setting task name.
+         */
+        NAME("name");
 
 
         /**
