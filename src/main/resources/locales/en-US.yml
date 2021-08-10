@@ -92,17 +92,17 @@ tasks:
             [missing-permissions]
             [missing-tasks]
           # Generates [level] message.
-          level: "&c&l Required Level: &r&c [number]"
+          level: "&c Required Level: [number]"
           # Generates [money] message.
-          money: "&c&l Required Money: &r&c [number]"
+          money: "&c Required Money: [number]"
           # Generates [missing-permission] message title.
-          permission-title: "&c&l Missing Permissions:"
+          permission-title: "&c Missing Permissions:"
           # Generates [missing-permission] message values.
-          permission: "&c  -[permission]"
+          permission: "  &c - [permission]"
           # Generates [missing-tasks] message title.
-          tasks-title: "&c&l Missing Tasks:"
+          tasks-title: "&c Missing Tasks:"
           # Generates [missing-tasks] message values.
-          tasks: "&c  -[task]"
+          tasks: "  &c - [task]"
         status:
           description: |-
             [disabled]
@@ -125,80 +125,80 @@ tasks:
           description: |-
             [player]
             [team]
-          player-rewards: "&2&l Player Rewards:"
-          team-rewards: "&2&l Team Rewards:"
+          player-rewards: "&7&l Player Rewards:"
+          team-rewards: "&7&l Team Rewards:"
           lore: |-
             [items]
             [experience]
             [money]
             [commands]
-          command-title: "&f&l Reward Commands:"
-          command: "&f  -[value]"
-          item-title: "&f&l Reward Items:"
-          item: "&f  -[value]"
-          experience: "&f&l Experience: &r&f [value]"
-          money: "&f&l Money: &r&f [value]"
+          command-title: " &7 Reward Commands:"
+          command: "   &7 - [value]"
+          item-title: " &7 Reward Items:"
+          item: "   &7 - [value]"
+          experience: " &7 Experience: [value]"
+          money: " &7 Money: [value]"
         type:
           block-break:
-            title-any: "&f&l Break any [number] blocks"
-            whitelist-title: "&f&l Break [number] blocks from:"
-            whitelist-block: "&f  -[material]"
-            whitelist-title-one: "&f&l Break [number] [material] blocks"
-            blacklist-title: "&f&l Break any [number] blocks except:"
-            blacklist-title-one: "&f&l Break any [number] blocks except &c [material]"
-            blacklist-block: "&c  -[material]"
+            title-any: "&7 Break any [number] blocks"
+            whitelist-title: "&7 Break [number] blocks from:"
+            whitelist-block: "  &7 - [material]"
+            whitelist-title-one: "&7 Break [number] [material] blocks"
+            blacklist-title: "&7 Break any [number] blocks except:"
+            blacklist-title-one: "&7 Break any [number] blocks except &c [material]"
+            blacklist-block: "  &c - [material]"
           block-place:
-            title-any: "&f&l Place any [number] blocks"
-            whitelist-title: "&f&l Place [number] blocks from:"
-            whitelist-block: "&f  -[material]"
-            whitelist-title-one: "&f&l Place [number] [material] blocks"
-            blacklist-title: "&f&l Place any [number] blocks except:"
-            blacklist-title-one: "&f&l Place any [number] blocks except &c [material]"
-            blacklist-block: "&c  -[material]"
+            title-any: "&7 Place any [number] blocks"
+            whitelist-title: "&7 Place [number] blocks from:"
+            whitelist-block: "  &7 - [material]"
+            whitelist-title-one: "&7 Place [number] [material] blocks"
+            blacklist-title: "&7 Place any [number] blocks except:"
+            blacklist-title-one: "&7 Place any [number] blocks except &c [material]"
+            blacklist-block: "  &c - [material]"
           consume:
-            title-any: "&f&l Consume any [number] of items"
-            whitelist-title: "&f&l Consume [number] items from:"
-            whitelist-item: "&f  -[item]"
-            whitelist-title-one: "&f&l Consume [number] [item]"
-            blacklist-title: "&f&l Consume any [number] of items except:"
-            blacklist-title-one: "&f&l Consume any [number] items except &c [item]"
-            blacklist-item: "&c  -[item]"
+            title-any: "&7 Consume any [number] of items"
+            whitelist-title: "&7 Consume [number] items from:"
+            whitelist-item: "  &7 - [item]"
+            whitelist-title-one: "&7 Consume [number] [item]"
+            blacklist-title: "&7 Consume any [number] of items except:"
+            blacklist-title-one: "&7 Consume any [number] items except &c [item]"
+            blacklist-item: "  &c - [item]"
           damage-deal:
-            title: "&f&l Deal [number] damage"
+            title: "&7 Deal [number] damage"
           damage-receive:
-            title: "&f&l Receive [number] damage"
+            title: "&7 Receive [number] damage"
           breed:
-            title-any: "&f&l Breed any [number] entities"
-            whitelist-title: "&f&l Breed [number] entities from:"
-            whitelist-entity: "&f  -[entity]"
-            whitelist-title-one: "&f&l Breed [number] [entity]s"
-            blacklist-title: "&f&l Breed any [number] entities except:"
-            blacklist-title-one: "&f&l Breed any [number] entities except &c [entity]"
-            blacklist-entity: "&c  -[entity]"
+            title-any: "&7 Breed any [number] entities"
+            whitelist-title: "&7 Breed [number] entities from:"
+            whitelist-entity: "  &7 - [entity]"
+            whitelist-title-one: "&7 Breed [number] [entity]s"
+            blacklist-title: "&7 Breed any [number] entities except:"
+            blacklist-title-one: "&7 Breed any [number] entities except &c [entity]"
+            blacklist-entity: "  &c - [entity]"
           kill:
-            title-any: "&f&l Kill any [number] entities"
-            whitelist-title: "&f&l Kill [number] entities from:"
-            whitelist-entity: "&f  -[entity]"
-            whitelist-title-one: "&f&l Kill [number] [entity]s"
-            blacklist-title: "&f&l Kill any [number] entities except:"
-            blacklist-title-one: "&f&l Kill any [number] entities except &c [entity]"
-            blacklist-entity: "&c  -[entity]"
+            title-any: "&7 Kill any [number] entities"
+            whitelist-title: "&7 Kill [number] entities from:"
+            whitelist-entity: "  &7 - [entity]"
+            whitelist-title-one: "&7 Kill [number] [entity]s"
+            blacklist-title: "&7 Kill any [number] entities except:"
+            blacklist-title-one: "&7 Kill any [number] entities except &c [entity]"
+            blacklist-entity: "  &c - [entity]"
           fishing:
-            title-any: "&f&l Fish any [number] items"
-            whitelist-title: "&f&l Fish [number] items from:"
-            whitelist-item: "&f  -[item]"
-            whitelist-title-one: "&f&l Fish [number] [item]s"
-            blacklist-title: "&f&l Fish any [number] items except:"
-            blacklist-title-one: "&f&l Fish any [number] items except &c [item]"
-            blacklist-item: "&c  -[item]"
+            title-any: "&7 Fish any [number] items"
+            whitelist-title: "&7 Fish [number] items from:"
+            whitelist-item: "  &7 - [item]"
+            whitelist-title-one: "&7 Fish [number] [item]s"
+            blacklist-title: "&7 Fish any [number] items except:"
+            blacklist-title-one: "&7 Fish any [number] items except &c [item]"
+            blacklist-item: "  &c - [item]"
           tactical-fishing:
-            title-any: "&f&l Catch in a bucket any [number] entities"
-            whitelist-title: "&f&l Catch in a bucket [number] entities from:"
-            whitelist-entity: "&f  -[entity]"
-            whitelist-title-one: "&f&l Catch in a bucket [number] [entity]s"
-            blacklist-title: "&f&l Catch in a bucket any [number] entities except:"
-            blacklist-title-one: "&f&l Catch in a bucket any [number] entities except &c [entity]"
-            blacklist-entity: "&c  -[entity]"
+            title-any: "&7 Catch in a bucket any [number] entities"
+            whitelist-title: "&7 Catch in a bucket [number] entities from:"
+            whitelist-entity: "  &7 - [entity]"
+            whitelist-title-one: "&7 Catch in a bucket [number] [entity]s"
+            blacklist-title: "&7 Catch in a bucket any [number] entities except:"
+            blacklist-title-one: "&7 Catch in a bucket any [number] entities except &c [entity]"
+            blacklist-entity: "  &c - [entity]"
     tips:
       click-to-previous: "&e Click &7 to view previous page."
       click-to-next: "&e Click &7 to view next page."
